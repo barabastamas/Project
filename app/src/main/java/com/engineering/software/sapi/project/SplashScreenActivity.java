@@ -11,6 +11,9 @@ import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 public class SplashScreenActivity extends Activity {
 
     private static final int SPLASH_TIME_OUT = 3000;
@@ -25,6 +28,18 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        /*
+         *  Initialize Parse
+         */
+        Parse.initialize(this, "NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg", "TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2");
+
+        /*
+         *  Create TestObject
+         */
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
 
         ImageView loading = (ImageView) findViewById(R.id.loading_animation);
         loading.setBackgroundResource(R.drawable.loading_animation);

@@ -16,7 +16,7 @@ import com.parse.ParseObject;
 
 public class SplashScreenActivity extends Activity {
 
-    private static final int SPLASH_TIME_OUT = 3000;
+    private static final int SPLASH_TIME_OUT = 6000;
 
     private boolean isNetworkAvaible() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

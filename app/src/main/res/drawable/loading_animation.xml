@@ -34,4 +34,80 @@
         android:drawable="@drawable/loading_animation_7"
         android:duration="100" />
 
+    <item
+        android:drawable="@drawable/loading_animation_8"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_9"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_10"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_11"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_12"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_13"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_14"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_15"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_16"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_17"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_18"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_19"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_20"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_21"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_22"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_23"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_24"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_25"
+        android:duration="100" />
+
+    <item
+        android:drawable="@drawable/loading_animation_26"
+        android:duration="100" />
+
 </animation-list>

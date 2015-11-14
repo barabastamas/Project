@@ -16,7 +16,7 @@ import com.parse.ParseObject;
 
 public class SplashScreenActivity extends Activity {
 
-    private static final int SPLASH_TIME_OUT = 6000;
+    private static final int SPLASH_TIME_OUT = 3000;
 
     private boolean isNetworkAvaible() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -60,7 +60,7 @@ public class SplashScreenActivity extends Activity {
                     loadingAnimation.stop();
 
                     // Start the main activity
-                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                 } else {
                     Toast.makeText(SplashScreenActivity.this, "No network connection!", Toast.LENGTH_LONG).show();
                 }

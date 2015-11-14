@@ -34,7 +34,7 @@
         android:drawable="@drawable/loading_animation_7"
         android:duration="100" />
 
-    <item
+    <!--<item
         android:drawable="@drawable/loading_animation_8"
         android:duration="100" />
 
@@ -108,6 +108,6 @@
 
     <item
         android:drawable="@drawable/loading_animation_26"
-        android:duration="100" />
+        android:duration="100" />-->
 
 </animation-list>

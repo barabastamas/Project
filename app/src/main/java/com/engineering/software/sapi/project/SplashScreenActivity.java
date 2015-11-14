@@ -1,5 +1,6 @@
 package com.engineering.software.sapi.project;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,16 +20,33 @@ public class SplashScreenActivity extends Activity {
 
     private static final int SPLASH_TIME_OUT = 3000;
 
-    private boolean isNetworkAvaible() {
+    /*
+     * Verify if there is network available
+     */
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwordInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetwordInfo != null && activeNetwordInfo.isConnected();
+    }
+
+    /*
+     * Hide Status bar
+     */
+    private void hideStatusBar(){
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        hideStatusBar();
 
         /*
          *  Initialize Parse
@@ -55,7 +74,7 @@ public class SplashScreenActivity extends Activity {
                  */
 
                 //  Check for network connection
-                if (isNetworkAvaible()) {
+                if (isNetworkAvailable()) {
                     // stop loading animation
                     loadingAnimation.stop();
 

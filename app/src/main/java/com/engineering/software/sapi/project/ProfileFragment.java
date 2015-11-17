@@ -11,9 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ProfileFragment extends Fragment {
 
     ImageView imageView;

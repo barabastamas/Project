@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Project</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="google_maps_key">Google Maps Key!</string>
     <string name="action_settings">Settings</string>

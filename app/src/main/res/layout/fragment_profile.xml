@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.engineering.software.sapi.project.ProfileFragment">
 
+
     <ImageView
         android:id="@+id/profile_picture"
         android:layout_width="124dp"

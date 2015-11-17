@@ -19,6 +19,8 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
+import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
+
 public class SplashScreenActivity extends Activity {
 
     private static final int SPLASH_TIME_OUT = 3000;
@@ -92,7 +94,7 @@ public class SplashScreenActivity extends Activity {
                     loadingAnimation.stop();
 
                     // Start the main activity
-                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                 } else {
                     Toast.makeText(SplashScreenActivity.this, "No network connection!", Toast.LENGTH_LONG).show();
                 }

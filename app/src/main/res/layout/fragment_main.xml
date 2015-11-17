@@ -1,0 +1,30 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.engineering.software.sapi.project.MainFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+    <Button
+            android:layout_height="wrap_content"
+            android:text="Add new road"
+            android:id="@+id/addNewButton"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent" />
+
+    <Button
+        android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search road"
+            android:id="@+id/button2"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+</FrameLayout>

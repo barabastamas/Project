@@ -16,14 +16,16 @@
             android:text="Add new road"
             android:id="@+id/addNewButton"
             android:layout_gravity="center_horizontal"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:onClick="myClickHandleradd"/>
 
     <Button
         android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Search road"
-            android:id="@+id/button2"
-            android:layout_gravity="center_horizontal" />
+            android:id="@+id/searchButton"
+            android:layout_gravity="center_horizontal"
+            android:onClick="myClickHandlersearch"/>
 
     </LinearLayout>
 

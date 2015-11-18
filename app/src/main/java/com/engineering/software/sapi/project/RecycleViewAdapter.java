@@ -1,5 +1,7 @@
 package com.engineering.software.sapi.project;
 
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +16,12 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView passengerName;
+        FloatingActionButton fabViewProfile;
 
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view_passenger);
+            fabViewProfile = (FloatingActionButton) itemView.findViewById(R.id.fabViewProfile);
             passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);
         }
     }

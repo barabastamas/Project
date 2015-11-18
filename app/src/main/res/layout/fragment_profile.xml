@@ -12,9 +12,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:src="@drawable/default_profile_pic"
-        />
+        android:clickable="false" />
+    <!--android:src="@drawable/default_profile_pic"-->
+
     <TextView
         android:id="@+id/delimiter"
         android:layout_width="0dp"
@@ -22,7 +22,8 @@
         android:layout_below="@+id/profile_picture"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
+
     <TextView
         android:id="@+id/name_text"
         android:layout_width="match_parent"
@@ -31,15 +32,16 @@
         android:layout_below="@+id/delimiter"
         android:paddingLeft="10dp"
         android:text="Name"
-        android:textSize="30dp"/>
+        android:textSize="30dp" />
+
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/delimiter"
         android:layout_below="@+id/delimiter"
-        android:editable="true"
-        />
+        android:editable="true" />
+
     <TextView
         android:id="@+id/phone_text"
         android:layout_width="match_parent"
@@ -49,7 +51,8 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
         android:text="Phone"
-        android:textSize="30dp"/>
+        android:textSize="30dp" />
+
     <EditText
         android:id="@+id/phone"
         android:layout_width="match_parent"
@@ -58,8 +61,8 @@
         android:layout_below="@+id/name"
         android:layout_marginTop="10dp"
         android:editable="true"
-        android:inputType="number"
-        />
+        android:inputType="number" />
+
     <TextView
         android:id="@+id/email_text"
         android:layout_width="match_parent"
@@ -69,7 +72,8 @@
         android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
         android:text="Email"
-        android:textSize="30dp"/>
+        android:textSize="30dp" />
+
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
@@ -77,8 +81,8 @@
         android:layout_alignLeft="@+id/delimiter"
         android:layout_below="@+id/phone"
         android:layout_marginTop="10dp"
-        android:editable="true"
-        />
+        android:editable="true" />
+
     <Button
         android:id="@+id/profile_button"
         android:layout_width="wrap_content"
@@ -88,6 +92,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         android:text="Edit"
-        android:textAlignment="center"/>
+        android:textAlignment="center" />
 
 </RelativeLayout>

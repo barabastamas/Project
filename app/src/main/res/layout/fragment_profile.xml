@@ -1,10 +1,93 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.engineering.software.sapi.project.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="124dp"
+        android:layout_height="124dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:src="@drawable/default_profile_pic"
+        />
+    <TextView
+        android:id="@+id/delimiter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/profile_picture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/delimiter"
+        android:layout_below="@+id/delimiter"
+        android:paddingLeft="10dp"
+        android:text="Name"
+        android:textSize="30dp"/>
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/delimiter"
+        android:layout_below="@+id/delimiter"
+        android:editable="true"
+        />
+    <TextView
+        android:id="@+id/phone_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/delimiter"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:text="Phone"
+        android:textSize="30dp"/>
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/delimiter"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="10dp"
+        android:editable="true"
+        android:inputType="number"
+        />
+    <TextView
+        android:id="@+id/email_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/delimiter"
+        android:layout_below="@+id/phone"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:text="Email"
+        android:textSize="30dp"/>
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/delimiter"
+        android:layout_below="@+id/phone"
+        android:layout_marginTop="10dp"
+        android:editable="true"
+        />
+    <Button
+        android:id="@+id/profile_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/email"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Edit"
+        android:textAlignment="center"/>
 
-</FrameLayout>
+</RelativeLayout>

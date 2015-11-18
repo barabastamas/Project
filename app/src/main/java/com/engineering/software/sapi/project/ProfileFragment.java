@@ -40,8 +40,14 @@ public class ProfileFragment extends Fragment {
                 String btnText;
                 btnText = pBtn.getText().toString();
                 if (btnText.equals("Edit")){
+                    name.setFocusableInTouchMode(true);
+                    phone.setFocusableInTouchMode(true);
+                    email.setFocusableInTouchMode(true);
                     pBtn.setText("Save");
                 }else if (btnText.equals("Save")){
+                    name.setFocusable(false);
+                    phone.setFocusable(false);
+                    email.setFocusable(false);
                     pBtn.setText("Edit");
                 }
             }

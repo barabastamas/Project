@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
          * Set starting frame
          */
         try {
-            setStartingFragment(OwnRoutesFragment.class.newInstance());
+            setStartingFragment(MainFragment.class.newInstance());
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

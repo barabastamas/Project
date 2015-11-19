@@ -2,7 +2,7 @@ package com.engineering.software.sapi.project;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,7 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v  = inflater.inflate(R.layout.fragment_main, container, false);
         Button addNewButton = (Button)v.findViewById(R.id.addNewButton);
+
         // Inflate the layout for this fragment
         return v;
     }

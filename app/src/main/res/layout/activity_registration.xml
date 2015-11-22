@@ -36,6 +36,18 @@
                 android:ems="10"
                 android:id="@+id/etEnterPassword"
                 android:hint="Enter your password" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/etPassAgain"
+                android:hint="Enter your password again"
+                android:singleLine="true"
+                android:imeActionId="@+id/edittext_action_signup"
+                android:imeActionLabel="@string/signup"
+                android:imeOptions="actionUnspecified"/>
         </LinearLayout>
 
 

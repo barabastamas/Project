@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchRouteFragment.class;
                 break;
             case R.id.log_out:
-                fragmentClass = LogOutFragment.class;
+                fragmentClass = EditRouteFragment.class;
                 break;
         }
 
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, drawerLayout,toolbar,
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close);
     }
@@ -145,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
         setTitle(item.getTitle());
     }
 
-    private void setActionBarTitle(Class c) {
-        setTitle(c.getSimpleName());
+    private void setActionBarTitle(String title) {
+        setTitle(title);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -160,6 +160,6 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Sets the action bar title
          */
-        setActionBarTitle(navigationViewDrawer.getMenu().getItem(OWN_ROUTES));
+        setActionBarTitle("Main");
     }
 }

@@ -1,9 +1,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordonatorLayout"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,14 +16,17 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="210dp" />
+            android:layout_height="170dp" />
 
         <!-- Starting location -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
             android:weightSum="2">
 
             <TextView
@@ -33,11 +37,12 @@
                 android:textColor="@color/primary_text"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_view_from"
+            <EditText
+                android:id="@+id/edit_text_from"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                android:background="@null"
                 android:gravity="right"
                 android:text="Targu Mures"
                 android:textColor="@color/secondary_text"
@@ -45,18 +50,14 @@
 
         </LinearLayout>
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
         <!-- Destination -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:weightSum="2">
 
             <TextView
@@ -67,11 +68,12 @@
                 android:textColor="@color/primary_text"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_view_destination"
+            <EditText
+                android:id="@+id/edit_text_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                android:background="@null"
                 android:gravity="right"
                 android:text="Cluj Napoca"
                 android:textColor="@color/secondary_text"
@@ -90,7 +92,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
             android:weightSum="2">
 
             <TextView
@@ -101,11 +106,12 @@
                 android:textColor="@color/primary_text"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_view_date"
+            <EditText
+                android:id="@+id/edit_text_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                android:background="@null"
                 android:gravity="right"
                 android:text="2015-01-10"
                 android:textColor="@color/secondary_text"
@@ -124,7 +130,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="20dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
             android:weightSum="3">
 
             <TextView
@@ -135,11 +144,12 @@
                 android:textColor="@color/primary_text"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_view_price"
+            <EditText
+                android:id="@+id/edit_text_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
+                android:background="@null"
                 android:gravity="right"
                 android:text="35"
                 android:textColor="@color/secondary_text"
@@ -155,42 +165,31 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/text_view_passengers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:weightSum="2">
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/passengers" />
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switch_show_passengers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="@string/show_passengers_switch"
-                android:textColor="@color/primary_text"
-                android:textSize="16sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_view_passenger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1.5"
-                android:background="@color/background" />
-
-        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycle_view_passenger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>
-
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
+        android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_edit" />
 

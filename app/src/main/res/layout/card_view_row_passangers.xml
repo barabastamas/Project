@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view_passenger"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical">
+    android:background="@color/background">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view_passenger"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background">
+        android:background="@color/background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:weightSum="2">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="20dp">
+        <TextView
+            android:id="@+id/text_view_passenger_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1.8"
+            android:gravity="left"
+            android:text="Tohotom"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabViewProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|right"
-                android:elevation="6dp"
-                android:src="@drawable/ic_profile"
-                android:tint="@color/white"
-                app:fabSize="mini" />
+        <Button
+            android:id="@+id/button_view_profile"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="@string/view_profile"
+            android:textColor="@color/accent">
 
-            <TextView
-                android:id="@+id/text_view_passenger_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Tohotom"
-                android:textColor="@color/primary_text"
-                android:textSize="20sp" />
-        </LinearLayout>
+        </Button>
+    </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>
 
-</LinearLayout>

@@ -4,6 +4,7 @@ package com.engineering.software.sapi.project.Profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class ProfileFragment extends Fragment {
     private ImageView imageView;
     private EditText name, phone, email;
     private TextView rating;
+    private String _name, _phone, _email, _rating;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -49,10 +51,18 @@ public class ProfileFragment extends Fragment {
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            name.setText(currentUser.getUsername());
-            phone.setText(currentUser.get("phoneNumber").toString());
-            email.setText(currentUser.getEmail());
-            rating.setText(currentUser.get("rating").toString());
+            try {
+                _name = currentUser.getUsername();
+                _phone = currentUser.get("phoneNumber").toString();
+                _email = currentUser.getEmail();
+                _rating = currentUser.get("rating").toString();
+            }catch (NullPointerException e){
+                Log.d("Valami","Null");
+            }
+            name.setText(_name);
+            phone.setText(_phone);
+            email.setText(_email);
+            rating.setText(_rating);
 
         } else {
             Toast.makeText(getContext(), "Session lost. Please log in again!", Toast.LENGTH_LONG).show();

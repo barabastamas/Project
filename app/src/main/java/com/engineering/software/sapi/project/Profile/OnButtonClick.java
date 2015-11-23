@@ -42,6 +42,7 @@ public class OnButtonClick implements View.OnClickListener {
             currentUser.setUsername(name.getText().toString().trim());
             currentUser.setEmail(email.getText().toString().trim());
             currentUser.put("phoneNumber", phone.getText().toString().trim());
+            currentUser.saveInBackground();
             btn.setText("Edit");
         }
     }

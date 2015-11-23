@@ -24,7 +24,7 @@
             android:name=".LoginRegister.LoginActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".LoginRegister.SignUpActivity"
+            android:name=".LoginRegister.Registration"
             android:label="@string/app_name" />
         <activity
             android:name=".MainActivity"

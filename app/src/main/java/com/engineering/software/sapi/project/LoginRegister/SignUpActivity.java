@@ -96,6 +96,10 @@ public class SignUpActivity extends Activity {
         dialog.setMessage("Signing up. Please wait.");
         dialog.show();
 
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.logOut();
+
+        //creating a new user
         ParseUser user = new ParseUser();
         user.setUsername(etEnterName.getText().toString());
         user.setPassword(etEnterPass.getText().toString());

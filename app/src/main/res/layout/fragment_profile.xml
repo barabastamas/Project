@@ -2,19 +2,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.engineering.software.sapi.project.ProfileFragment">
+    tools:context="com.engineering.software.sapi.project.Profile.ProfileFragment">
 
     <ImageView
         android:id="@+id/profile_picture"
         android:layout_width="124dp"
         android:layout_height="124dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:src="@drawable/default_profile_pic"
-        />
+        android:src="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/rating_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/profile_picture"
+        android:paddingLeft="10dp"
+        android:text="Rating:"
+        android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rating_text"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/profile_picture"
+        android:paddingLeft="10dp"
+        android:text="4.5"
+        android:textSize="25dp" />
+
+    <ImageView
+        android:id="@+id/rating_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rating_text"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/rating"
+        android:clickable="false"
+        android:src="@drawable/ic_rating_star" />
+
     <TextView
         android:id="@+id/delimiter"
         android:layout_width="0dp"
@@ -39,9 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/delimiter"
-        android:layout_below="@+id/delimiter"
-        android:editable="true"
-        />
+        android:layout_below="@+id/delimiter" />
 
     <TextView
         android:id="@+id/phone_text"
@@ -61,10 +98,8 @@
         android:layout_alignLeft="@+id/delimiter"
         android:layout_below="@+id/name"
         android:layout_marginTop="10dp"
-        android:editable="true"
-        android:inputType="number"
-        />
-    
+        android:inputType="number" />
+
     <TextView
         android:id="@+id/email_text"
         android:layout_width="match_parent"
@@ -82,10 +117,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/delimiter"
         android:layout_below="@+id/phone"
-        android:layout_marginTop="10dp"
-        android:editable="true"
-        />
-    
+        android:layout_marginTop="10dp" />
+
     <Button
         android:id="@+id/profile_button"
         android:layout_width="wrap_content"

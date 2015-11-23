@@ -27,7 +27,7 @@
                 android:inputType="textEmailAddress"
                 android:ems="10"
                 android:id="@+id/etEnterName"
-                android:hint="Enter a valid e-mail address" />
+                android:hint="Enter your username" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -80,11 +80,7 @@
             android:paddingBottom="15dp"
             android:gravity="center_vertical|center_horizontal">
 
-            <ImageButton
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:id="@+id/fbButton"
-                android:background="@drawable/facebookbutton" />
+
         </LinearLayout>
 
 

@@ -20,13 +20,13 @@ import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
 
-    Button bSignUp, fbButton;
+    Button bSignUp;
     EditText etEnterName, etEnterPass, etPassAgain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        setContentView(R.layout.activity_signup);
 
         bSignUp = (Button) findViewById(R.id.signUpButton);
         etEnterName = (EditText) findViewById(R.id.etEnterName);

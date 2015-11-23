@@ -27,7 +27,7 @@
                 android:inputType="textEmailAddress"
                 android:ems="10"
                 android:id="@+id/etUserName"
-                android:hint="Username / E-mail Address" />
+                android:hint="Username" />
 
             <EditText
                 android:layout_width="fill_parent"

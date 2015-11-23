@@ -2,12 +2,16 @@ package com.engineering.software.sapi.project.LoginRegister;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +27,14 @@ public class LoginActivity extends Activity {
     Button bLogin;
     EditText etUserName, etPassword;
     TextView tvForgPass, tvSignUp;
+    CheckBox saveLoginCheckBox;
+    SharedPreferences loginPreferences;
+    SharedPreferences.Editor loginPrefsEditor;
+    Boolean saveLogin;
+    String username,password;
 
-    UserLocalStore userLocalStore;
+
+
 
 
     @Override
@@ -37,6 +47,9 @@ public class LoginActivity extends Activity {
         etPassword = (EditText) findViewById(R.id.etPassword);
         tvForgPass = (TextView) findViewById(R.id.tvForgotPass);
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
+        saveLoginCheckBox = (CheckBox)findViewById(R.id.cbRememberMe);
+
+
         etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -113,7 +126,7 @@ public class LoginActivity extends Activity {
                     // Show the error message
                     Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
-                    // Start an intent for the dispatch activity
+                    // Start an intent for the MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

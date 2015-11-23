@@ -13,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
+import com.parse.ParseUser;
+
 public class MainActivity extends AppCompatActivity {
 
     /*
@@ -113,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.log_out:
                 fragmentClass = LogOutFragment.class;
+                ParseUser.logOut();
+                finish();
                 break;
         }
 

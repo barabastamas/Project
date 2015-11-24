@@ -24,6 +24,8 @@
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="show_passengers_switch">Show passegers?</string>
+    <string name="passengers">Passengers:</string>
+    <string name="view_profile">View profile</string>
 
     <string name="login">Log in</string>
     <string name="signup">Sign up</string>

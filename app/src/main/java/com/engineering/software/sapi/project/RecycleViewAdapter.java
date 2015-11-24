@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,19 +17,19 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView passengerName;
-        FloatingActionButton fabViewProfile;
+        Button buttonViewProfile;
 
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view_passenger);
-            fabViewProfile = (FloatingActionButton) itemView.findViewById(R.id.fabViewProfile);
+            buttonViewProfile = (Button) itemView.findViewById(R.id.button_view_profile);
             passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);
         }
     }
 
     List<String> passengers;
 
-    RecycleViewAdapter(List<String> passengers){
+    RecycleViewAdapter(List<String> passengers) {
         this.passengers = passengers;
     }
 

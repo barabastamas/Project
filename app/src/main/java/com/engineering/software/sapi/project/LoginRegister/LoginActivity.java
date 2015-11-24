@@ -28,14 +28,10 @@ public class LoginActivity extends Activity {
     EditText etUserName, etPassword;
     TextView tvForgPass, tvSignUp;
     CheckBox saveLoginCheckBox;
-    SharedPreferences loginPreferences;
-    SharedPreferences.Editor loginPrefsEditor;
-    Boolean saveLogin;
-    String username,password;
 
-
-
-
+    private SharedPreferences loginPreferences;
+    private SharedPreferences.Editor loginPrefsEditor;
+    private Boolean saveLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +44,16 @@ public class LoginActivity extends Activity {
         tvForgPass = (TextView) findViewById(R.id.tvForgotPass);
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
         saveLoginCheckBox = (CheckBox)findViewById(R.id.cbRememberMe);
+
+        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPrefsEditor = loginPreferences.edit();
+
+        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        if (saveLogin == true) {
+            etUserName.setText(loginPreferences.getString("username", ""));
+            etPassword.setText(loginPreferences.getString("password", ""));
+            saveLoginCheckBox.setChecked(true);
+        }
 
 
         etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -78,14 +84,15 @@ public class LoginActivity extends Activity {
     }
 
 
+
     private void registrate(View v) {
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
     }
 
     private void login() {
-        String username = etUserName.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        final String username = etUserName.getText().toString().trim();
+        final String password = etPassword.getText().toString().trim();
 
         // Validate the log in data
         boolean validationError = false;
@@ -127,6 +134,16 @@ public class LoginActivity extends Activity {
                     Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 } else {
                     // Start an intent for the MainActivity
+                    if (saveLoginCheckBox.isChecked()) {
+                        loginPrefsEditor.putBoolean("saveLogin", true);
+                        loginPrefsEditor.putString("username", username);
+                        loginPrefsEditor.putString("password", password);
+                        loginPrefsEditor.commit();
+                    } else {
+                        loginPrefsEditor.clear();
+                        loginPrefsEditor.commit();
+                    }
+                    Toast.makeText(LoginActivity.this, "Login succesful!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -134,5 +151,8 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
+
+
 }
 

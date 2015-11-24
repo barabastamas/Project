@@ -1,6 +1,8 @@
 package com.engineering.software.sapi.project;
 
 
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -13,9 +15,11 @@ import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.engineering.software.sapi.project.Profile.ProfileFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -33,14 +37,6 @@ import java.util.List;
  */
 public class EditRouteFragment extends Fragment {
 
-    private void addPassengers() {
-        passengers = new ArrayList<>();
-        passengers.add("Biro Zsolt");
-        passengers.add("Gabor Ata");
-        passengers.add("Nagy Norbi");
-        passengers.add("Zold Attila");
-        passengers.add("Barabas Tamas");
-    }
 
     private List<String> passengers;
 
@@ -154,7 +150,7 @@ public class EditRouteFragment extends Fragment {
      * Make an edit text not editable
      */
     private void makeEditTextNotEditable(EditText editText) {
-        editText.setKeyListener(null);
+        editText.setFocusable(false);
         /*editText.setFocusableInTouchMode(false);*/
     }
 
@@ -162,7 +158,7 @@ public class EditRouteFragment extends Fragment {
      * Make a non editable edit text editable
      */
     private void makeEditTextEditable(EditText editText) {
-        editText.setKeyListener((KeyListener) editText.getTag());
+        editText.setFocusableInTouchMode(true);
         /*editText.setFocusableInTouchMode(true);*/
     }
 
@@ -242,7 +238,7 @@ public class EditRouteFragment extends Fragment {
 
         addPassengers();
 
-        RecycleViewAdapter adapter = new RecycleViewAdapter(passengers);
+        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -262,7 +258,6 @@ public class EditRouteFragment extends Fragment {
         editTextPrice = (EditText) view.findViewById(R.id.edit_text_price);
 
         getTextFromAllEditText();
-
         makeAllEditTextNotEditable();
     }
 
@@ -295,6 +290,15 @@ public class EditRouteFragment extends Fragment {
             }
         }
         return null;
+    }
+
+    private void addPassengers() {
+        passengers = new ArrayList<>();
+        passengers.add("Biro Zsolt");
+        passengers.add("Gabor Ata");
+        passengers.add("Nagy Norbi");
+        passengers.add("Zold Attila");
+        passengers.add("Barabas Tamas");
     }
 
     @Override

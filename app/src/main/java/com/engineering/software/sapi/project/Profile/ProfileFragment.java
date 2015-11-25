@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,27 +130,7 @@ public class ProfileFragment extends Fragment {
             } else {
                 _rating = currentUser.get("rating").toString();
             }
-            if (currentUser.getParseFile("profilePic") == null) {
-                profilePic.setImageResource(R.drawable.default_profile_pic);
-            } else {
-                _pic = currentUser.getParseFile("profilePic");
-                progressDialog = ProgressDialog.show(getActivity(), "", "Loading profile picture...", true);
-                _pic.getDataInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        if (e == null) {
-                            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0,
-                                    data.length);
-                            if (bmp != null) {
-                                profilePic.setImageBitmap(bmp);
-                                progressDialog.dismiss();
-                            }
-                        } else {
-                            Log.e("Image download error!", " null");
-                        }
-                    }
-                });
-            }
+
             username.setText(_username);
             name.setText(_name);
             phone.setText(_phone);
@@ -205,14 +184,37 @@ public class ProfileFragment extends Fragment {
             file.saveInBackground();
 
             currentUser.put("profilePic", file);
+            currentUser.saveInBackground();
             profilePic.setImageBitmap(bitmap);
             bitmap.recycle();
             Toast.makeText(getActivity(), "Profile picture changed.",
                     Toast.LENGTH_SHORT).show();
-
         } else if (requestCode == Activity.RESULT_CANCELED) {
             Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        progressDialog = ProgressDialog.show(getActivity(), "", "Loading profile picture...", true);
+        _pic = currentUser.getParseFile("profilePic");
+        _pic.getDataInBackground(new GetDataCallback() {
+            @Override
+            public void done(byte[] data, ParseException e) {
+                if (e == null) {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0,
+                            data.length);
+                    if (bmp != null) {
+                        profilePic.setImageBitmap(bmp);
+                        progressDialog.dismiss();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Error while downloading profile picture.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 }

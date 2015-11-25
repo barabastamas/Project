@@ -32,4 +32,6 @@
     <string name="parse_app_id">NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg</string>
     <string name="parse_client_id">TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2</string>
     <string name="facebook_app_id">166454227041432</string>
+
+    <string name="from_date">From date</string>
 </resources>

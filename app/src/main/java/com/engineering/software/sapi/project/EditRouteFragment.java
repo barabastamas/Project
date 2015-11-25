@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -38,7 +44,6 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class EditRouteFragment extends Fragment {
-
 
     private List<String> passengers;
 
@@ -336,10 +341,12 @@ public class EditRouteFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        addPassengers();
+        /*addPassengers();*/
 
-        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
-        recyclerView.setAdapter(adapter);
+
+        getRoutePassengers();
+
+
     }
 
     /*
@@ -393,6 +400,38 @@ public class EditRouteFragment extends Fragment {
             }
         }
         return null;
+    }
+
+    /*
+     * Get passengers of a route
+     */
+    private void getRoutePassengers() {
+        passengers = new ArrayList<>();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
+        /*query.whereEqualTo("Yht8tYYaHl", "objectID");*/
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject obj : objects) {
+                        if (obj.getObjectId().equals("Yht8tYYaHl")) {
+                            List<String> list = obj.getList("passengers");
+                            for (String s : list) {
+                                Log.d("PASSENGERS", s);
+                                passengers.add(s);
+                            }
+                        }
+                    }
+                    RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
+                    recyclerView.setAdapter(adapter);
+
+                    Log.d("PASSENGERS", passengers.size() + "");
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void addPassengers() {

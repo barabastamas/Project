@@ -1,7 +1,8 @@
 package com.engineering.software.sapi.project;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
+import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.engineering.software.sapi.project.Profile.ProfileFragment;
 
 import java.util.List;
 
@@ -24,13 +27,35 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             cardView = (CardView) itemView.findViewById(R.id.card_view_passenger);
             buttonViewProfile = (Button) itemView.findViewById(R.id.button_view_profile);
             passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);
+
+            buttonViewProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (parentFragment != null) {
+                        Fragment fragment = new ProfileFragment();
+
+                        FragmentTransaction fragmentTransaction = parentFragment.getFragmentManager().beginTransaction();
+
+                        fragmentTransaction.hide(parentFragment);
+                        fragmentTransaction.add(R.id.content, fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+                }
+            });
         }
     }
 
+    static EditRouteFragment parentFragment = null;
+    final LayoutInflater layoutInflater;
+
     List<String> passengers;
 
-    RecycleViewAdapter(List<String> passengers) {
+    RecycleViewAdapter(Context context, List<String> passengers, EditRouteFragment editRouteFragment) {
+        layoutInflater = LayoutInflater.from(context);
         this.passengers = passengers;
+        parentFragment = editRouteFragment;
+
     }
 
     @Override

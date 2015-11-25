@@ -1,6 +1,7 @@
 package com.engineering.software.sapi.project;
 
 
+import android.app.DatePickerDialog;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,11 +22,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -32,14 +39,6 @@ import java.util.List;
  */
 public class EditRouteFragment extends Fragment {
 
-    private void addPassengers() {
-        passengers = new ArrayList<>();
-        passengers.add("Biro Zsolt");
-        passengers.add("Gabor Ata");
-        passengers.add("Nagy Norbi");
-        passengers.add("Zold Attila");
-        passengers.add("Barabas Tamas");
-    }
 
     private List<String> passengers;
 
@@ -56,13 +55,16 @@ public class EditRouteFragment extends Fragment {
 
     private EditText editTextFrom;
     private EditText editTextDestination;
-    private EditText editTextDate;
     private EditText editTextPrice;
+    private TextView textViewDate;
 
     private String starting;
     private String destination;
     private String date;
     private String price;
+
+    private SimpleDateFormat dateFormat;
+    private DatePickerDialog datePickerDialog;
 
     private boolean isEditEnabled = false;
 
@@ -70,6 +72,10 @@ public class EditRouteFragment extends Fragment {
     ArrayList<LatLng> coordinatesDestination;
     LatLng latLngStarting;
     LatLng latLngDestination;
+    MarkerOptions markerOptionStarting;
+    MarkerOptions markerOptionDestination;
+    Marker markerStart;
+    Marker markerDestination;
 
     public EditRouteFragment() {
         // Required empty public constructor
@@ -110,25 +116,53 @@ public class EditRouteFragment extends Fragment {
          */
         setupMap();
 
+        /*
+         * Setup date picker dialog
+         */
+        setupDatePickerDialog();
 
+        // On click listener of the floating action button
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Snackbar.make(coordinatorLayout, "fabEdit", Snackbar.LENGTH_LONG).show();*/
                 if (isEditEnabled) {
                     // edit disabled
                     isEditEnabled = false;
 
+                    // Set focus of all edit text and text view to false
                     makeAllEditTextNotEditable();
-                    getTextFromAllEditText();
+                    makeTextViewNotFocusable(textViewDate);
+                    textViewDate.setOnClickListener(null);
 
-                    map.clear();
-                    getCoordinates();
-                    getLatLng();
-                    addMarkersToMap(latLngStarting, latLngDestination);
+                    // Get the newly entered text
+                    //getTextFromEditTextAndTextView();
+                    String newStart = editTextFrom.getText().toString();
+                    String newDestination = editTextDestination.getText().toString();
 
+                    /*
+                     * Refresh map with new coordinates
+                     */
+                    if (!newStart.equals(starting)) {
+                        // Get starting location coordinates
+                        getCoordinatesStarting(newStart);
+                        // Convert starting location coordinates to latitude and longitude
+                        getLatLngStarting();
+                        // Add marker to starting location
+                        addMarkersToStart(latLngStarting);
+                        // Move camera to starting location
+                        moveToCoordinates(latLngStarting);
+                    }
+                    if (!newDestination.equals(destination)) {
 
-                    // set map and recycler view visible
+                        // Get destination coordinates
+                        getCoordinatesDestination(newDestination);
+                        // Convert destination coordinates to latitude and longitude
+                        getLatLngDestination();
+                        // Add markers to destination
+                        addMarkersToDestination(latLngDestination);
+                    }
+
+                    // Set map and recycler view visible
                     mapView.setVisibility(View.VISIBLE);
                     textViewPassengers.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
@@ -136,7 +170,17 @@ public class EditRouteFragment extends Fragment {
                     // edit enabled
                     isEditEnabled = true;
 
+                    // Enable focuse of all edit text and text view
                     makeAllEditTextEditable();
+                    makeTextViewFocusable(textViewDate);
+
+                    // set date on click
+                    textViewDate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            datePickerDialog.show();
+                        }
+                    });
 
                     // set map and recycler view visibility gone
                     mapView.setVisibility(View.GONE);
@@ -149,11 +193,32 @@ public class EditRouteFragment extends Fragment {
         return view;
     }
 
+    private void makeTextViewNotFocusable(TextView textView) {
+        textView.setFocusable(false);
+    }
+
+    private void makeTextViewFocusable(TextView textView) {
+        textView.setFocusable(true);
+    }
+
+
+    private void setupDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar date = Calendar.getInstance();
+                date.set(year, monthOfYear, dayOfMonth);
+                textViewDate.setText(dateFormat.format(date.getTime()));
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
     /*
      * Make an edit text not editable
      */
     private void makeEditTextNotEditable(EditText editText) {
-        editText.setFocusableInTouchMode(false);
+        editText.setFocusable(false);
     }
 
     /*
@@ -166,45 +231,57 @@ public class EditRouteFragment extends Fragment {
     private void makeAllEditTextNotEditable() {
         makeEditTextNotEditable(editTextFrom);
         makeEditTextNotEditable(editTextDestination);
-        makeEditTextNotEditable(editTextDate);
         makeEditTextNotEditable(editTextPrice);
     }
 
     private void makeAllEditTextEditable() {
         makeEditTextEditable(editTextFrom);
         makeEditTextEditable(editTextDestination);
-        makeEditTextEditable(editTextDate);
         makeEditTextEditable(editTextPrice);
     }
 
     /*
      * Add markers to starting location and to destination
      */
-    private void addMarkersToMap(LatLng start, LatLng dest) {
-        map.addMarker(new MarkerOptions().position(start).title(starting));
-        map.addMarker(new MarkerOptions().position(dest).title(destination));
+    private void addMarkersToStart(LatLng start) {
+        if (markerStart != null) {
+            markerStart.remove();
+        }
+        markerOptionStarting = new MarkerOptions().position(start).title(starting);
+        markerStart = map.addMarker(markerOptionStarting);
+    }
 
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, (float) 13.0));
+    private void addMarkersToDestination(LatLng dest) {
+        if (markerDestination != null) {
+            markerDestination.remove();
+        }
+        markerOptionDestination = new MarkerOptions().position(dest).title(destination);
+        markerDestination = map.addMarker(markerOptionDestination);
     }
 
     /*
      * Get coordinates of starting location and destination
      */
-    private void getCoordinates() {
-        coordinatesStarting = getCoordinatesFromLocation(starting);
-        coordinatesDestination = getCoordinatesFromLocation(destination);
+    private void getCoordinatesStarting(String s) {
+        coordinatesStarting = getCoordinatesFromLocation(s);
+    }
+
+    private void getCoordinatesDestination(String d) {
+        coordinatesDestination = getCoordinatesFromLocation(d);
     }
 
     /*
      * Get latitude and longitude of coordinates
      */
-    private void getLatLng() {
+    private void getLatLngStarting() {
         if (coordinatesStarting != null) {
             latLngStarting = new LatLng(
                     coordinatesStarting.get(0).latitude,
                     coordinatesStarting.get(0).longitude);
         }
+    }
 
+    private void getLatLngDestination() {
         if (coordinatesDestination != null) {
             latLngDestination = new LatLng(
                     coordinatesDestination.get(0).latitude,
@@ -220,11 +297,33 @@ public class EditRouteFragment extends Fragment {
         if (map == null) {
             map = mapView.getMap();
             if (map != null) {
-                getCoordinates();
-                getLatLng();
-                addMarkersToMap(latLngStarting, latLngDestination);
+                // Get starting location coordinates
+                getCoordinatesStarting(starting);
+                // Convert starting location coordinates to latitude and longitude
+                getLatLngStarting();
+
+                // Get destination coordinates
+                getCoordinatesDestination(destination);
+                // Convert destination coordinates to latitude and longitude
+                getLatLngDestination();
+
+                // Add markers to starting location and destination
+                addMarkersToStart(latLngStarting);
+                addMarkersToDestination(latLngDestination);
+
+                // Move camera to startin location
+                moveToCoordinates(latLngStarting);
+
+                /*PolylineOptions polylineOptions = new PolylineOptions();
+                *//*polylineOptions.geodesic(true);*//*
+                polylineOptions.add(latLngStarting, latLngDestination);
+                map.addPolyline(polylineOptions);*/
             }
         }
+    }
+
+    private void moveToCoordinates(LatLng latLngStarting) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStarting, (float) 13.0));
     }
 
     /*
@@ -239,7 +338,7 @@ public class EditRouteFragment extends Fragment {
 
         addPassengers();
 
-        RecycleViewAdapter adapter = new RecycleViewAdapter(passengers);
+        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -247,6 +346,9 @@ public class EditRouteFragment extends Fragment {
      * Initialize text views
      */
     private void initialize(View view) {
+        // set date format
+        dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_passenger);
         mapView = (MapView) view.findViewById(R.id.map);
 
@@ -255,19 +357,18 @@ public class EditRouteFragment extends Fragment {
 
         editTextFrom = (EditText) view.findViewById(R.id.edit_text_from);
         editTextDestination = (EditText) view.findViewById(R.id.edit_text_destination);
-        editTextDate = (EditText) view.findViewById(R.id.edit_text_date);
         editTextPrice = (EditText) view.findViewById(R.id.edit_text_price);
+        textViewDate = (TextView) view.findViewById(R.id.text_view_date);
 
-        getTextFromAllEditText();
-
+        getTextFromEditTextAndTextView();
         makeAllEditTextNotEditable();
     }
 
-    private void getTextFromAllEditText() {
+    private void getTextFromEditTextAndTextView() {
         starting = editTextFrom.getText().toString();
         destination = editTextDestination.getText().toString();
-        date = editTextDate.getText().toString();
         price = editTextPrice.getText().toString();
+        date = textViewDate.getText().toString();
     }
 
     private ArrayList<LatLng> getCoordinatesFromLocation(String location) {
@@ -279,7 +380,7 @@ public class EditRouteFragment extends Fragment {
                 List<Address> addresses = gc.getFromLocationName(location, 5);
 
                 // A list to save the coordinates if they are available
-                ArrayList<LatLng> latitudeLongitude = new ArrayList<LatLng>(addresses.size());
+                ArrayList<LatLng> latitudeLongitude = new ArrayList<>(addresses.size());
                 for (Address address : addresses) {
                     if (address.hasLatitude() && address.hasLongitude()) {
                         latitudeLongitude.add(new LatLng(address.getLatitude(), address.getLongitude()));
@@ -292,6 +393,15 @@ public class EditRouteFragment extends Fragment {
             }
         }
         return null;
+    }
+
+    private void addPassengers() {
+        passengers = new ArrayList<>();
+        passengers.add("Biro Zsolt");
+        passengers.add("Gabor Ata");
+        passengers.add("Nagy Norbi");
+        passengers.add("Zold Attila");
+        passengers.add("Barabas Tamas");
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.engineering.software.sapi.project;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -12,8 +15,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
 import com.engineering.software.sapi.project.Profile.ProfileFragment;
+import com.parse.ParseUser;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int SEARCH_ROUTE = 3;
     private static final int LOG_OUT = 4;
 
+    private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private NavigationView navigationViewDrawer;
@@ -36,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -44,6 +57,31 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.setDrawerListener(drawerToggle);
 
         navigationViewDrawer = (NavigationView) findViewById(R.id.navigation_view);
+
+        /*
+         * Add header to navigation drawer
+         */
+        View headerLayout = navigationViewDrawer.inflateHeaderView(R.layout.navigation_header);
+
+        /*
+         * Put current user name to navigation header
+         */
+        TextView textViewCurrentUserName = (TextView) headerLayout.findViewById(R.id.navigation_drawer_name);
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            try {
+                textViewCurrentUserName.setText(currentUser.getUsername());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Snackbar.make(coordinatorLayout, "Session lost. Please log in again!", Snackbar.LENGTH_LONG).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            this.finish();
+        }
+
 
         /*
          * Setup drawer view
@@ -65,10 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -114,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchRouteFragment.class;
                 break;
             case R.id.log_out:
-                fragmentClass = LogOutFragment.class;
+                fragmentClass = EditRouteFragment.class;
                 break;
         }
 
@@ -138,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, drawerLayout,toolbar,
+        return new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close);
     }
@@ -147,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
         setTitle(item.getTitle());
     }
 
-    private void setActionBarTitle(Class c) {
-        setTitle(c.getSimpleName());
+    private void setActionBarTitle(String title) {
+        setTitle(title);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -162,6 +197,6 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Sets the action bar title
          */
-        setActionBarTitle(navigationViewDrawer.getMenu().getItem(OWN_ROUTES));
+        setActionBarTitle("Main");
     }
 }

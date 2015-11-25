@@ -7,7 +7,6 @@
             android:title="@string/drawer_profile" />
         <item
             android:id="@+id/own_routes"
-            android:checked="true"
             android:icon="@drawable/ic_own_routes"
             android:title="@string/drawer_own_routes" />
         <item

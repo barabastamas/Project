@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,25 +14,65 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.engineering.software.sapi.project.R;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
 
-    Button bSignUp;
-    EditText etEnterName, etEnterPass, etPassAgain;
+    private Button bSignUp;
+    private EditText etEnterName, etEnterPass, etPassAgain, etEnterEmail, etEnterUserName;
+    private CallbackManager mCallbackManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_signup);
+        mCallbackManager = CallbackManager.Factory.create();
+
 
         bSignUp = (Button) findViewById(R.id.signUpButton);
+        etEnterUserName = (EditText) findViewById(R.id.etEnterUserName);
         etEnterName = (EditText) findViewById(R.id.etEnterName);
         etEnterPass = (EditText) findViewById(R.id.etEnterPassword);
         etPassAgain = (EditText) findViewById(R.id.etPassAgain);
+        etEnterEmail = (EditText) findViewById(R.id.etEnterEmail);
+        LoginButton fbButton = (LoginButton) findViewById(R.id.fbButton);
+
+        FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Profile profile = Profile.getCurrentProfile();
+                if (profile != null) {
+                    Log.d("Welcome", profile.getName());
+                }
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        };
+
+        fbButton.registerCallback(mCallbackManager, mCallback);
 
         etPassAgain.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -51,11 +92,14 @@ public class SignUpActivity extends Activity {
                 signup();
             }
         });
+
+
     }
 
-
     private void signup() {
-        String username = etEnterName.getText().toString().trim();
+        String username = etEnterUserName.getText().toString().trim();
+        String name = etEnterName.getText().toString().trim();
+        String email = etEnterEmail.getText().toString().trim();
         String password = etEnterPass.getText().toString().trim();
         String passwordAgain = etPassAgain.getText().toString().trim();
 
@@ -65,6 +109,20 @@ public class SignUpActivity extends Activity {
         if (username.length() == 0) {
             validationError = true;
             validationErrorMessage.append(getString(R.string.error_blank_username));
+        }
+        if (name.length() == 0) {
+            if (validationError) {
+                validationErrorMessage.append(getString(R.string.error_join));
+            }
+            validationError = true;
+            validationErrorMessage.append(getString(R.string.error_blank_email));
+        }
+        if (email.length() == 0) {
+            if (validationError) {
+                validationErrorMessage.append(getString(R.string.error_join));
+            }
+            validationError = true;
+            validationErrorMessage.append(getString(R.string.error_blank_email));
         }
         if (password.length() == 0) {
             if (validationError) {
@@ -101,8 +159,10 @@ public class SignUpActivity extends Activity {
 
         //creating a new user
         ParseUser user = new ParseUser();
-        user.setUsername(etEnterName.getText().toString());
+        user.setUsername(etEnterUserName.getText().toString());
         user.setPassword(etEnterPass.getText().toString());
+        user.setEmail(etEnterEmail.getText().toString());
+        user.put("name",name);
 
         user.signUpInBackground(new SignUpCallback() {
             @Override
@@ -120,15 +180,14 @@ public class SignUpActivity extends Activity {
             }
         });
 
-
-
     }
 
 
-
-
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
 
 }

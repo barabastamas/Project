@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -81,6 +82,13 @@ public class LoginActivity extends Activity {
             }
         });
 
+        tvForgPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
 
@@ -152,6 +160,18 @@ public class LoginActivity extends Activity {
         });
     }
 
+
+    /*private void sendEmail(String emailTo,String emailText,String emailSubject){
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        emailTo = currentUser.getEmail();
+        emailSubject = currentUser.get
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{emailTo});
+        i.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+        i.putExtra(Intent.EXTRA_TEXT   , emailText);
+    }
+*/
 
 
 }

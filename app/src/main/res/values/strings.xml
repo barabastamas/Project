@@ -32,31 +32,6 @@
     <string name="parse_app_id">NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg</string>
     <string name="parse_client_id">TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2</string>
     <string name="facebook_app_id">166454227041432</string>
-    <string name="maxp">Max person</string>
-    <string name="addr">add</string>
 
-    <string-array name="city_array">
-        <item>Bucharest</item>
-        <item>Alba</item>
-        <item>Alba Iulia</item>
-        <item>Arad Samoa</item>
-        <item>Baia Mare</item>
-        <item>Brasov</item>
-        <item>Braila</item>
-        <item>Cluj-Napoca</item>
-        <item>Constanta</item>
-        <item>Craiova</item>
-        <item>Galati</item>
-        <item>Iasi</item>
-        <item>Oradea</item>
-        <item>Satu Mare</item>
-        <item>Sibiu</item>
-        <item>Sighisoara</item>
-        <item>Suceava</item>
-        <item>Timisoara</item>
-        <item>Targu Jiu</item>
-        <item>Targu Mures</item>
-        <item>Tulcea</item>
-
-    </string-array>
+    <string name="from_date">From date</string>
 </resources>

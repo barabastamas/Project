@@ -32,6 +32,329 @@
     <string name="parse_app_id">NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg</string>
     <string name="parse_client_id">TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2</string>
     <string name="facebook_app_id">166454227041432</string>
-
+    <string name="maxp">Max person</string>
+    <string name="addr">add</string>
     <string name="from_date">From date</string>
+    <string-array name="city_array">
+        <item>Bucharest</item>
+        <item>Cluj-Napoca</item>
+        <item>Timisoara</item>
+        <item>Iasi</item>
+        <item>Constanta</item>
+        <item>Craiova</item>
+        <item>Brasov</item>
+        <item>Galati</item>
+        <item>Ploiesti</item>
+        <item>Oradea</item>
+        <item>Braila</item>
+        <item>Arad</item>
+        <item>Pitesti</item>
+        <item>Sibiu</item>
+        <item>Bacau</item>
+        <item>Targu Mures</item>
+        <item>Baia Mare</item>
+        <item>Buzau</item>
+        <item>Botosani</item>
+        <item>Satu Mare</item>
+        <item>Ramnicu Valcea</item>
+        <item>Drobeta-Turnu Severin</item>
+        <item>Suceava</item>
+        <item>Piatra Neamt</item>
+        <item>Targu Jiu</item>
+        <item>Targoviste</item>
+        <item>Focsani</item>
+        <item>Bistrita</item>
+        <item>Tulcea</item>
+        <item>Resita</item>
+        <item>Slatina</item>
+        <item>Calarasi</item>
+        <item>Alba Iulia</item>
+        <item>Giurgiu</item>
+        <item>Deva</item>
+        <item>Hunedoara</item>
+        <item>Zalau</item>
+        <item>Sfantu Gheorghe</item>
+        <item>Barlad</item>
+        <item>Vaslui</item>
+        <item>Roman</item>
+        <item>Turda</item>
+        <item>Medias</item>
+        <item>Slobozia</item>
+        <item>Alexandria</item>
+        <item>Voluntari</item>
+        <item>Lugoj</item>
+        <item>Medgidia</item>
+        <item>Onesti</item>
+        <item>Miercurea Ciuc</item>
+        <item>Sighetu Marmatiei</item>
+        <item>Petrosani</item>
+        <item>Mangalia</item>
+        <item>Tecuci</item>
+        <item>Odorheiu Secuiesc</item>
+        <item>Ramnicu Sarat</item>
+        <item>Pascani</item>
+        <item>Dej</item>
+        <item>Reghin</item>
+        <item>Navodari</item>
+        <item>Campina</item>
+        <item>Mioveni</item>
+        <item>Campulung</item>
+        <item>Caracal</item>
+        <item>Sacele</item>
+        <item>Fagaras</item>
+        <item>Fetesti</item>
+        <item>Sighisoara</item>
+        <item>Borsa</item>
+        <item>Rosiorii de Vede</item>
+        <item>Curtea de Arges</item>
+        <item>Sebes</item>
+        <item>Husi</item>
+        <item>Falticeni</item>
+        <item>Pantelimon</item>
+        <item>Oltenita</item>
+        <item>Turnu Magurele</item>
+        <item>Caransebes</item>
+        <item>Dorohoi</item>
+        <item>Vulcan</item>
+        <item>Radauti</item>
+        <item>Zarnesti</item>
+        <item>Lupeni</item>
+        <item>Aiud</item>
+        <item>Petrila</item>
+        <item>Campia Turzii</item>
+        <item>Buftea</item>
+        <item>Tarnaveni</item>
+        <item>Popesti-Leordeni</item>
+        <item>Moinesti</item>
+        <item>Codlea</item>
+        <item>Cugir</item>
+        <item>Carei</item>
+        <item>Gherla</item>
+        <item>Blaj</item>
+        <item>Comanesti</item>
+        <item>Motru</item>
+        <item>Targu Neamt</item>
+        <item>Moreni</item>
+        <item>Targu Secuiesc</item>
+        <item>Gheorgheni</item>
+        <item>Orastie</item>
+        <item>Bals</item>
+        <item>Baicoi</item>
+        <item>Dragasani</item>
+        <item>Salonta</item>
+        <item>Bailesti</item>
+        <item>Calafat</item>
+        <item>Cernavoda</item>
+        <item>Filiasi</item>
+        <item>Campulung Moldovenesc</item>
+        <item>Corabia</item>
+        <item>Adjud</item>
+        <item>Breaza</item>
+        <item>Bocsa</item>
+        <item>Marghita</item>
+        <item>Baia Sprie</item>
+        <item>Bragadiru</item>
+        <item>Ludus</item>
+        <item>Urziceni</item>
+        <item>Viseu de Sus</item>
+        <item>Rasnov</item>
+        <item>Buhusi</item>
+        <item>Stefanesti</item>
+        <item>Brad</item>
+        <item>Simleu Silvaniei</item>
+        <item>Vatra Dornei</item>
+        <item>Mizil</item>
+        <item>Cisnadie</item>
+        <item>Pucioasa</item>
+        <item>Chitila</item>
+        <item>Zimnicea</item>
+        <item>Toplita</item>
+        <item>Otopeni</item>
+        <item>Ovidiu</item>
+        <item>Gura Humorului</item>
+        <item>Gaesti</item>
+        <item>Vicovu de Sus</item>
+        <item>Tandarei</item>
+        <item>Ocna Mures</item>
+        <item>Bolintin-Vale</item>
+        <item>Avrig</item>
+        <item>Pecica</item>
+        <item>Simeria</item>
+        <item>Moldova Noua</item>
+        <item>Sannicolau Mare</item>
+        <item>Valenii de Munte</item>
+        <item>Darmanesti</item>
+        <item>Dabuleni</item>
+        <item>Comarnic</item>
+        <item>Negresti-Oas</item>
+        <item>Rovinari</item>
+        <item>Scornicesti</item>
+        <item>Targu Lapus</item>
+        <item>Sacueni</item>
+        <item>Videle</item>
+        <item>Santana</item>
+        <item>Oravita</item>
+        <item>Targu Ocna</item>
+        <item>Calan</item>
+        <item>Boldesti-Scaeni</item>
+        <item>Magurele</item>
+        <item>Harlau</item>
+        <item>Draganesti-Olt</item>
+        <item>Jimbolia</item>
+        <item>Marasesti</item>
+        <item>Beius</item>
+        <item>Beclean</item>
+        <item>Urlati</item>
+        <item>Otelu Rosu</item>
+        <item>Strehaia</item>
+        <item>Targu Frumos</item>
+        <item>Orsova</item>
+        <item>Sinaia</item>
+        <item>Jibou</item>
+        <item>Sovata</item>
+        <item>Costesti</item>
+        <item>Ianca</item>
+        <item>Lipova</item>
+        <item>Dolhasca</item>
+        <item>Topoloveni</item>
+        <item>Murfatlar</item>
+        <item>Nehoiu</item>
+        <item>Flamanzi</item>
+        <item>Covasna</item>
+        <item>Alesd</item>
+        <item>Valea lui Mihai</item>
+        <item>Darabani</item>
+        <item>Hateg</item>
+        <item>Sangeorz-Bai</item>
+        <item>Titu</item>
+        <item>Cristuru Secuiesc</item>
+        <item>Harsova</item>
+        <item>Liteni</item>
+        <item>Nasaud</item>
+        <item>Podu Iloaiei</item>
+        <item>Eforie</item>
+        <item>Odobesti</item>
+        <item>Huedin</item>
+        <item>Ineu</item>
+        <item>Salcea</item>
+        <item>Seini</item>
+        <item>Uricani</item>
+        <item>Babadag</item>
+        <item>Bumbesti-Jiu</item>
+        <item>Busteni</item>
+        <item>Agnita</item>
+        <item>Iernut</item>
+        <item>Baraolt</item>
+        <item>Tasnad</item>
+        <item>Roznov</item>
+        <item>Babeni</item>
+        <item>Negresti</item>
+        <item>Recas</item>
+        <item>Macin</item>
+        <item>Targu Carbunesti</item>
+        <item>Chisineu-Cris</item>
+        <item>Siret</item>
+        <item>Mihailesti</item>
+        <item>Budesti</item>
+        <item>Plopeni</item>
+        <item>Panciu</item>
+        <item>Calimanesti</item>
+        <item>Fieni</item>
+        <item>Somcuta Mare</item>
+        <item>Intorsura Buzaului</item>
+        <item>Zlatna</item>
+        <item>Anina</item>
+        <item>Curtici</item>
+        <item>Nadlac</item>
+        <item>Dumbraveni</item>
+        <item>Victoria</item>
+        <item>Amara</item>
+        <item>Patarlagele</item>
+        <item>Techirghiol</item>
+        <item>Pogoanele</item>
+        <item>Ulmeni</item>
+        <item>Campeni</item>
+        <item>Cehu Silvaniei</item>
+        <item>Tautii-Magheraus</item>
+        <item>Murgeni</item>
+        <item>Tismana</item>
+        <item>Buzias</item>
+        <item>Segarcea</item>
+        <item>Saveni</item>
+        <item>Pancota</item>
+        <item>Ungheni</item>
+        <item>Sarmasu</item>
+        <item>Racari</item>
+        <item>Talmaciu</item>
+        <item>Cajvana</item>
+        <item>Vlahita</item>
+        <item>Fundulea</item>
+        <item>Livada</item>
+        <item>Faget</item>
+        <item>Teius</item>
+        <item>Bicaz</item>
+        <item>Stei</item>
+        <item>Insuratei</item>
+        <item>Lehliu Gara</item>
+        <item>Targu Bujor</item>
+        <item>Piatra-Olt</item>
+        <item>Horezu</item>
+        <item>Deta</item>
+        <item>Ardud</item>
+        <item>Balan</item>
+        <item>Slanic</item>
+        <item>Brezoi</item>
+        <item>Sebis</item>
+        <item>Frasin</item>
+        <item>Gataia</item>
+        <item>Potcoava</item>
+        <item>Miercurea Nirajului</item>
+        <item>Brosteni</item>
+        <item>Novaci</item>
+        <item>Saliste</item>
+        <item>Copsa Mica</item>
+        <item>Baneasa</item>
+        <item>Baia de Arama</item>
+        <item>Ciacova</item>
+        <item>Stefanesti</item>
+        <item>Vanju Mare</item>
+        <item>Geoagiu</item>
+        <item>Rupea</item>
+        <item>Sangeorgiu de Padure</item>
+        <item>Negru Voda</item>
+        <item>Abrud</item>
+        <item>Isaccea</item>
+        <item>Baile Herculane</item>
+        <item>Milisauti</item>
+        <item>Cavnic</item>
+        <item>Fierbinti-Targ</item>
+        <item>Salistea de Sus</item>
+        <item>Balcesti</item>
+        <item>Berbesti</item>
+        <item>Predeal</item>
+        <item>Ghimbav</item>
+        <item>Azuga</item>
+        <item>Azuga</item>
+        <item>Aninoasa</item>
+        <item>Bucecea</item>
+        <item>Slanic Moldova</item>
+        <item>Baile Olanesti</item>
+        <item>Miercurea Sibiului</item>
+        <item>Sulina</item>
+        <item>Bechet</item>
+        <item>Faurei</item>
+        <item>Ocna Sibiului</item>
+        <item>Baia de Aries</item>
+        <item>Ocnele Mari</item>
+        <item>Cazanesti</item>
+        <item>Dragomiresti</item>
+        <item>Beresti</item>
+        <item>Borsec</item>
+        <item>Baile Govora</item>
+        <item>Vascau</item>
+        <item>Solca</item>
+        <item>Nucet</item>
+        <item>Baile Tusnad</item>
+
+    </string-array>
 </resources>

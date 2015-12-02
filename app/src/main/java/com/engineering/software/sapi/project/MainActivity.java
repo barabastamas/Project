@@ -67,11 +67,13 @@ public class MainActivity extends AppCompatActivity {
          * Put current user name to navigation header
          */
         TextView textViewCurrentUserName = (TextView) headerLayout.findViewById(R.id.navigation_drawer_name);
+        TextView textViewCurrentUserEmail = (TextView) headerLayout.findViewById(R.id.navigation_drawer_email);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             try {
-                textViewCurrentUserName.setText(currentUser.getUsername());
+                textViewCurrentUserName.setText(currentUser.get("name").toString());
+                textViewCurrentUserEmail.setText(currentUser.get("email").toString());
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }

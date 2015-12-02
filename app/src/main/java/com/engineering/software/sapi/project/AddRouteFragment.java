@@ -10,6 +10,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -162,13 +164,24 @@ public class AddRouteFragment extends Fragment {
                         object.put("date", datetxt);
                         object.put("price", pricetxt);
                         object.put("numberOfPassanger", maxptxt);
+                        String owner = ParseUser.getCurrentUser().getObjectId();
 
+                        object.put("routeOwner", owner);
                         object.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
                                 if (e == null) {
                                     //getActivity().finish();
-                                    Toast.makeText(getView().getContext(), "Sie sind schon da...", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getView().getContext(), "Sie sind schon daaaaa...", Toast.LENGTH_LONG).show();
+                                    FragmentManager fragmentManager;
+                                    Fragment fragment;
+                                    FragmentTransaction ft;
+                                    fragmentManager = getFragmentManager();
+                                    fragment = new MainFragment();
+                                    ft = fragmentManager.beginTransaction();
+                                    ft.replace(R.id.content, fragment);
+                                    ft.addToBackStack("MainFragment");
+                                    ft.commit();
                                 } else {
                                     Toast.makeText(getView().getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 }

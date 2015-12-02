@@ -25,9 +25,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -73,14 +71,14 @@ public class EditRouteFragment extends Fragment {
 
     private boolean isEditEnabled = false;
 
-    ArrayList<LatLng> coordinatesStarting;
-    ArrayList<LatLng> coordinatesDestination;
-    LatLng latLngStarting;
-    LatLng latLngDestination;
-    MarkerOptions markerOptionStarting;
-    MarkerOptions markerOptionDestination;
-    Marker markerStart;
-    Marker markerDestination;
+    private ArrayList<LatLng> coordinatesStarting;
+    private ArrayList<LatLng> coordinatesDestination;
+    private LatLng latLngStarting;
+    private LatLng latLngDestination;
+    private MarkerOptions markerOptionStarting;
+    private MarkerOptions markerOptionDestination;
+    private Marker markerStart;
+    private Marker markerDestination;
 
     public EditRouteFragment() {
         // Required empty public constructor
@@ -102,7 +100,7 @@ public class EditRouteFragment extends Fragment {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         /*
-         * Initialize text views
+         * Initialization
          */
         initialize(view);
 
@@ -140,7 +138,7 @@ public class EditRouteFragment extends Fragment {
                     textViewDate.setOnClickListener(null);
 
                     // Get the newly entered text
-                    //getTextFromEditTextAndTextView();
+                    //getData();
                     String newStart = editTextFrom.getText().toString();
                     String newDestination = editTextDestination.getText().toString();
 
@@ -350,7 +348,7 @@ public class EditRouteFragment extends Fragment {
     }
 
     /*
-     * Initialize text views
+     * Initialization
      */
     private void initialize(View view) {
         // set date format
@@ -367,17 +365,20 @@ public class EditRouteFragment extends Fragment {
         editTextPrice = (EditText) view.findViewById(R.id.edit_text_price);
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
 
-        getTextFromEditTextAndTextView();
+        getData();
         makeAllEditTextNotEditable();
     }
 
-    private void getTextFromEditTextAndTextView() {
+    private void getData() {
         starting = editTextFrom.getText().toString();
         destination = editTextDestination.getText().toString();
         price = editTextPrice.getText().toString();
         date = textViewDate.getText().toString();
     }
 
+    /*
+     * Get location position on map (coordinates)
+     */
     private ArrayList<LatLng> getCoordinatesFromLocation(String location) {
         if (Geocoder.isPresent()) {
             try {

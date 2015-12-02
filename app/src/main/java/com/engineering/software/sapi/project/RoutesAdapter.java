@@ -17,10 +17,10 @@ import java.util.List;
 public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder>{
     public class RouteInfo {
         protected String from;
-        protected String to;
-        protected Date fromDate;
+        protected String destination;
+        protected String date;
         private float price;
-        protected int numberOfpass;
+        protected int numberOfPassanger;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -54,10 +54,10 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int i) {
         ParseObject ri = routeList.get(i);
         holder.rFrom.setText(ri.get("from").toString());
-        holder.rTo.setText(ri.get("to").toString());
-        holder.rDate.setText(ri.get("fromDate").toString());
+        holder.rTo.setText(ri.get("destination").toString());
+        holder.rDate.setText(ri.get("date").toString());
         holder.rPrice.setText(ri.get("price").toString());
-        holder.rNumbOfPass.setText(ri.get("numbOfPass").toString());
+        holder.rNumbOfPass.setText(ri.get("numberOfPassanger").toString());
 
     }
 

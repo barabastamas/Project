@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -74,9 +75,6 @@ public class SearchRouteFragment extends Fragment {
         recList.setLayoutManager(llm);
 
 
-
-
-
         Calendar c = Calendar.getInstance();
         minYear = c.get(Calendar.YEAR);
         minMonth = c.get(Calendar.MONTH);
@@ -114,30 +112,30 @@ public class SearchRouteFragment extends Fragment {
 
                 } else {
                     routeList = new ArrayList<>();
-                    final ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
-                    query.whereEqualTo(etFrom.getText().toString(), "from");
-                    Log.d("from:", etFrom.getText().toString());
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
+
+                    query.whereEqualTo("from", etFrom.getText().toString());
                     query.findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> objects, ParseException e) {
-                            if (e == null) {
-
-                                for (ParseObject obj : objects) {
-
-                                    String des = obj.get("destination").toString();
-                                    Log.d("Des",des);
-                                    if (des.equals(etTo.getText().toString())) {
-                                        Log.d("destination:", etTo.getText().toString());
-                                        routeList.add(obj);
-                                    }
+                            for (ParseObject obj : objects) {
+                                if (obj.get("destination").toString().equals(etTo.getText().toString()) && obj.get("date").toString().equals(fromDateEtxt.getText().toString()))   {
+                                    Log.d("too", obj.get("destination").toString());
+                                    routeList.add(obj);
                                 }
-                            } else {
-                                Log.d("Error:","Eror e not null");
+
                             }
+                            /*for (ParseObject obj : routeList) {
+                                Log.d("route", obj.get("from").toString());
+                            }*/
+                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList);
+                            recList.setAdapter(routesAdapter);
                         }
                     });
-                    RoutesAdapter routesAdapter = new RoutesAdapter(routeList);
-                    recList.setAdapter(routesAdapter);
+
+
+
+
                 }
             }
         });

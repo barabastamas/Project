@@ -122,6 +122,7 @@ public class SearchRouteFragment extends Fragment {
                                 if (obj.get("destination").toString().equals(etTo.getText().toString()) && obj.get("date").toString().equals(fromDateEtxt.getText().toString()))   {
                                     Log.d("too", obj.get("destination").toString());
                                     routeList.add(obj);
+                                    String objID = obj.getObjectId();
                                 }
 
                             }
@@ -130,6 +131,8 @@ public class SearchRouteFragment extends Fragment {
                             }*/
                             RoutesAdapter routesAdapter = new RoutesAdapter(routeList);
                             recList.setAdapter(routesAdapter);
+
+
                         }
                     });
 

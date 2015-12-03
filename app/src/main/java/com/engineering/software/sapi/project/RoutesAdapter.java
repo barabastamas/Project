@@ -1,5 +1,8 @@
 package com.engineering.software.sapi.project;
 
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,25 +24,39 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
         protected String date;
         private float price;
         protected int numberOfPassanger;
+        protected String objID;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        protected TextView rTitle;
         protected TextView rFrom;
         protected TextView rTo;
         protected TextView rDate;
         protected TextView rPrice;
         protected TextView rNumbOfPass;
+        protected CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            rTitle = (TextView) itemView.findViewById(R.id.title);
             rFrom = (TextView) itemView.findViewById(R.id.txtFrom);
             rTo = (TextView) itemView.findViewById(R.id.txtTo);
             rDate = (TextView) itemView.findViewById(R.id.txtDate);
             rPrice = (TextView) itemView.findViewById(R.id.txtPrice);
             rNumbOfPass = (TextView) itemView.findViewById(R.id.txtNumb);
+            cardView = (CardView) itemView.findViewById(R.id.card_view);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
 
         }
     }
+
     private List<ParseObject> routeList;
     public RoutesAdapter(List<ParseObject> routeList){
         this.routeList = routeList;
@@ -65,6 +82,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     public int getItemCount() {
         return routeList.size();
     }
+
 
 
 }

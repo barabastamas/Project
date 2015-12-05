@@ -185,8 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:paddingRight="5dp" />
 
     </LinearLayout>
 

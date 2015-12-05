@@ -29,6 +29,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -117,7 +118,22 @@ public class EditRouteFragment extends Fragment {
         /*
          * Setup map
          */
-        setupMap();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mapView.onCreate(bundle);
+                    if (map == null) {
+                        map = mapView.getMap();
+                        if (map != null) {
+                            setupMap();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         /*
          * Setup date picker dialog
@@ -296,35 +312,34 @@ public class EditRouteFragment extends Fragment {
      * Sets up the Map
      */
     private void setupMap() {
-        mapView.onCreate(bundle);
-        if (map == null) {
-            map = mapView.getMap();
-            if (map != null) {
-                // Get starting location coordinates
-                getCoordinatesStarting(starting);
-                // Convert starting location coordinates to latitude and longitude
-                getLatLngStarting();
 
-                // Get destination coordinates
-                getCoordinatesDestination(destination);
-                // Convert destination coordinates to latitude and longitude
-                getLatLngDestination();
+        // Get starting location coordinates
+        getCoordinatesStarting(starting);
+        // Convert starting location coordinates to latitude and longitude
+        getLatLngStarting();
 
-                // Add markers to starting location and destination
-                addMarkersToStart(latLngStarting);
-                addMarkersToDestination(latLngDestination);
+        // Get destination coordinates
+        getCoordinatesDestination(destination);
+        // Convert destination coordinates to latitude and longitude
+        getLatLngDestination();
 
-                // Move camera to startin location
-                moveToCoordinates(latLngStarting);
+        // Add markers to starting location and destination
+        addMarkersToStart(latLngStarting);
+        addMarkersToDestination(latLngDestination);
+
+        // Move camera to startin location
+        moveToCoordinates(latLngStarting);
 
                 /*PolylineOptions polylineOptions = new PolylineOptions();
                 *//*polylineOptions.geodesic(true);*//*
                 polylineOptions.add(latLngStarting, latLngDestination);
                 map.addPolyline(polylineOptions);*/
-            }
-        }
     }
 
+
+    /*
+     * Move map to the {latLngStarting} coordinates
+     */
     private void moveToCoordinates(LatLng latLngStarting) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStarting, (float) 13.0));
     }
@@ -343,8 +358,6 @@ public class EditRouteFragment extends Fragment {
 
 
         getRoutePassengers();
-
-
     }
 
     /*
@@ -420,11 +433,17 @@ public class EditRouteFragment extends Fragment {
                             List<String> list = obj.getList("passengers");
                             for (String s : list) {
                                 Log.d("PASSENGERS", s);
-                                passengers.add(s);
+                                ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+                                try {
+                                    String user = userQuery.get(s).get("name").toString();
+                                    passengers.add(user);
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
+                                }
                             }
                         }
                     }
-                    RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
+                    PassangersAdapter adapter = new PassangersAdapter(getContext(), passengers, EditRouteFragment.this);
                     recyclerView.setAdapter(adapter);
 
                     Log.d("PASSENGERS", passengers.size() + "");

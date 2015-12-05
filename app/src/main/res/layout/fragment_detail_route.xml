@@ -26,75 +26,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:weightSum="2">
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:weightSum="3">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="@string/name"
-                    android:textColor="@color/primary_text"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/text_view_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="0.5"
-                    android:background="@null"
-                    android:gravity="right"
-                    android:singleLine="true"
-                    android:text="Tohotom"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="20sp" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:weightSum="2">
 
-            </LinearLayout>
+                    <com.github.siyamed.shapeimageview.CircularImageView
+                        android:id="@+id/detail_route_profile_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.8"
+                        android:src="@drawable/profile_image" />
 
-
-            <!-- Phone number -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:weightSum="2">
-
+                    <TextView
+                        android:id="@+id/text_view_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="left|center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:text="Tohotom"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/button_call"
+                    style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_weight="1"
+                    android:layout_weight="1.25"
                     android:gravity="center"
-                    android:minWidth="88dp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:singleLine="true"
-                    android:text="Call"
-                    android:textColor="@color/black" />
+                    android:text="@string/call"
+                    android:textColor="@color/accent" />
 
                 <Button
                     android:id="@+id/button_send_email"
+                    style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_weight="1"
+                    android:layout_weight="1.25"
                     android:gravity="center"
-                    android:minWidth="88dp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:singleLine="true"
                     android:text="@string/send_email"
-                    android:textColor="@color/black" />
-
+                    android:textColor="@color/accent" />
 
             </LinearLayout>
 
@@ -104,7 +94,7 @@
                 android:layout_height="1dp"
                 android:background="@color/divider" />
 
-            <!-- Starting location -->
+            <!-- Starting location & Destination -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,56 +106,36 @@
                 android:weightSum="2">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="@string/from"
-                    android:textColor="@color/primary_text"
-                    android:textSize="20sp" />
-
-                <TextView
                     android:id="@+id/text_view_from"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="1"
                     android:background="@null"
                     android:gravity="right"
                     android:singleLine="true"
-                    android:text="Targu Mures"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <!-- Destination -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:weightSum="2">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.2"
-                    android:singleLine="true"
-                    android:text="@string/to"
+                    android:text="Cluj Napoca"
                     android:textColor="@color/primary_text"
                     android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="-"
+                    android:textColor="@color/primary_text" />
 
                 <TextView
                     android:id="@+id/text_view_destination"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
                     android:background="@null"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:singleLine="true"
-                    android:text="Cluj Napoca"
-                    android:textColor="@color/secondary_text"
+                    android:text="Targu Mures"
+                    android:textColor="@color/primary_text"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -255,8 +225,24 @@
                     android:textSize="20sp" />
             </LinearLayout>
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/text_view_passengers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/passengers" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycle_view_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

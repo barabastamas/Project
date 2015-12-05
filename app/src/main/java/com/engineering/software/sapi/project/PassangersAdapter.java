@@ -15,7 +15,7 @@ import com.engineering.software.sapi.project.Profile.ProfileFragment;
 
 import java.util.List;
 
-public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.ViewHolder> {
+public class PassangersAdapter extends RecyclerView.Adapter<PassangersAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
@@ -46,15 +46,15 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    static EditRouteFragment parentFragment = null;
+    static Fragment parentFragment = null;
     final LayoutInflater layoutInflater;
 
     List<String> passengers;
 
-    RecycleViewAdapter(Context context, List<String> passengers, EditRouteFragment editRouteFragment) {
+    PassangersAdapter(Context context, List<String> passengers, Fragment fragment) {
         layoutInflater = LayoutInflater.from(context);
         this.passengers = passengers;
-        parentFragment = editRouteFragment;
+        parentFragment = fragment;
 
     }
 

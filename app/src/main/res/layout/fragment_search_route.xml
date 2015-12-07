@@ -22,7 +22,7 @@
             />
 
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/fromid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,12 +44,13 @@
             android:text="To"
             android:textSize="30sp" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/toid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:capitalize="words"
+
 
 
             />

@@ -2,6 +2,9 @@ package com.engineering.software.sapi.project;
 
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseObject;
 
@@ -19,6 +23,7 @@ import java.util.List;
  * Created by norby on 11/26/2015.
  */
 public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder>{
+
     public class RouteInfo {
         protected String from;
         protected String destination;
@@ -36,6 +41,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
         protected TextView rPrice;
         protected TextView rNumbOfPass;
         protected CardView cardView;
+        protected FragmentActivity myContext;
+        protected Fragment fragment;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -47,16 +54,32 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
             rNumbOfPass = (TextView) itemView.findViewById(R.id.txtNumb);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
 
+
+
             cardView.setOnClickListener(new View.OnClickListener() {
+
+
                 @Override
                 public void onClick(View v) {
-                    Log.d("kiir","igen");
+                    Log.d("LogCard", "yes");
+                    //Toast.makeText(v.getContext(), "View", Toast.LENGTH_SHORT).show();
+                    Log.d("Log", "Button was pressed");
+                    android.app.FragmentManager manager ;
+                    manager = myContext.getFragmentManager();
+                    EditRouteFragment fragment;
+                    fragment= new EditRouteFragment();
+                    FragmentTransaction ft = manager.beginTransaction();
+                    //ft.replace(R.id.content,fragment) ;
+                    ft.addToBackStack("EditRouteFragment");
+                    ft.commit();
 
                 }
             });
 
 
         }
+
+
     }
 
     private List<ParseObject> routeList;

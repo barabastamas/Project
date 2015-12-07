@@ -11,6 +11,8 @@
     <string name="drawer_search_route">Search route</string>
     <string name="drawer_log_out">Log out</string>
     <string name="drawer_sub_title_routes">Routes</string>
+    <string name="name">Name</string>
+    <string name="send_email">Send Email</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

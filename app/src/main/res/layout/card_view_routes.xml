@@ -1,0 +1,156 @@
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    card_view:cardCornerRadius="4dp"
+    android:layout_margin="5dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/wallet_holo_blue_light"
+            android:text="Route"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textSize="15sp"
+                android:text="From:"/>
+
+            <TextView
+                android:id="@+id/txtFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:textSize="15sp"
+                android:layout_below="@id/title"
+                android:layout_weight="0.7"
+                />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textSize="15sp"
+                android:text="To:"/>
+
+            <TextView
+                android:id="@+id/txtTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:textSize="15sp"
+                android:layout_below="@id/txtFrom"
+                android:layout_weight="0.7"
+                />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textSize="15sp"
+                android:text="Date:"/>
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="15sp"
+                android:layout_weight="0.7"
+
+                />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textSize="15sp"
+                android:text="Price:"/>
+
+            <TextView
+                android:id="@+id/txtPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="15sp"
+                android:layout_below="@+id/txtDate"
+                android:layout_weight="0.7"
+                />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.3"
+                android:textSize="15sp"
+                android:text="Number of person:"/>
+
+
+            <TextView
+                android:id="@+id/txtNumb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="15sp"
+                android:layout_below="@id/txtTo"
+                android:layout_weight="0.7"
+                />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+    </android.support.v7.widget.CardView>

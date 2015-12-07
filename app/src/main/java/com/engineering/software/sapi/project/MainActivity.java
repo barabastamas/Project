@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchRouteFragment.class;
                 break;
             case R.id.log_out:
-                fragmentClass = EditRouteFragment.class;
+                fragmentClass = DetailRouteFragment.class;
                 break;
         }
 

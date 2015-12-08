@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,6 +42,8 @@ import java.util.Locale;
 public class SearchRouteFragment extends Fragment {
     private EditText fromDateEtxt;
     private EditText toDateEtxt;
+    private String[] countries;
+    private ArrayAdapter<String> adapter;
 
     private DatePickerDialog fromDatePickerDialog;
     private DatePickerDialog toDatePickerDialog;
@@ -63,8 +67,15 @@ public class SearchRouteFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search_route, container, false);
 
-        final EditText etFrom = (EditText) view.findViewById(R.id.fromid);
-        final EditText etTo = (EditText) view.findViewById(R.id.toid);
+        final AutoCompleteTextView etFrom = (AutoCompleteTextView) view.findViewById(R.id.fromid);
+        countries = getResources().getStringArray(R.array.city_array);
+        adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, countries);
+        etFrom.setAdapter(adapter);
+
+        final AutoCompleteTextView etTo = (AutoCompleteTextView) view.findViewById(R.id.toid);
+        countries = getResources().getStringArray(R.array.city_array);
+        adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, countries);
+        etTo.setAdapter(adapter);
 
         final Button searchButton = (Button) view.findViewById(R.id.button);
         Button setDateButton = (Button) view.findViewById(R.id.date_button);
@@ -89,8 +100,8 @@ public class SearchRouteFragment extends Fragment {
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager=(InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
                 fromDatePickerDialog.show();
             }
@@ -99,8 +110,8 @@ public class SearchRouteFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager=(InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
                 if (etFrom.getText().toString().equals("") || etTo.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("Error Date")) {
 
@@ -128,15 +139,14 @@ public class SearchRouteFragment extends Fragment {
                         @Override
                         public void done(List<ParseObject> objects, ParseException e) {
                             for (ParseObject obj : objects) {
-                                if (obj.get("destination").toString().equals(etTo.getText().toString()) && obj.get("date").toString().equals(fromDateEtxt.getText().toString()))   {
+                                if (obj.get("destination").toString().equals(etTo.getText().toString()) && obj.get("date").toString().equals(fromDateEtxt.getText().toString())) {
                                     Log.d("too", obj.get("destination").toString());
                                     routeList.add(obj);
 
-                                    String objID = obj.getObjectId();
                                 }
 
                             }
-                            if (routeList.size() == 0){
+                            if (routeList.size() == 0) {
                                 //Log.d("ures","igen");
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
                                 alertDialogBuilder.setTitle("No results");
@@ -152,14 +162,12 @@ public class SearchRouteFragment extends Fragment {
                                 alert.show();
                             }
 
-                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList);
+                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList,SearchRouteFragment.this, getContext());
                             recList.setAdapter(routesAdapter);
 
 
                         }
                     });
-
-
 
 
                 }

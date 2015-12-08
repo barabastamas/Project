@@ -17,13 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
+import com.engineering.software.sapi.project.LoginRegister.GetUserDetails;
 import com.engineering.software.sapi.project.Profile.ProfileFragment;
+import com.facebook.Profile;
 import com.parse.ParseUser;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,13 +66,11 @@ public class MainActivity extends AppCompatActivity {
          * Put current user name to navigation header
          */
         TextView textViewCurrentUserName = (TextView) headerLayout.findViewById(R.id.navigation_drawer_name);
-        TextView textViewCurrentUserEmail = (TextView) headerLayout.findViewById(R.id.navigation_drawer_email);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             try {
-                textViewCurrentUserName.setText(currentUser.get("name").toString());
-                textViewCurrentUserEmail.setText(currentUser.get("email").toString());
+                textViewCurrentUserName.setText(currentUser.getUsername());
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -151,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = SearchRouteFragment.class;
                 break;
             case R.id.log_out:
-                fragmentClass = DetailRouteFragment.class;
+                fragmentClass = LogOutFragment.class;
                 break;
         }
 
@@ -201,4 +198,7 @@ public class MainActivity extends AppCompatActivity {
          */
         setActionBarTitle("Main");
     }
+
+
+
 }

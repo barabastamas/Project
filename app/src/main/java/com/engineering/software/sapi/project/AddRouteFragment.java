@@ -167,6 +167,7 @@ public class AddRouteFragment extends Fragment {
                         String owner = ParseUser.getCurrentUser().getObjectId();
 
                         object.put("routeOwner", owner);
+                        object.put("isValid", true);
                         object.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {

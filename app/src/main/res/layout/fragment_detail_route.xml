@@ -113,7 +113,6 @@
                     android:background="@null"
                     android:gravity="right"
                     android:singleLine="true"
-                    android:text="Cluj Napoca"
                     android:textColor="@color/primary_text"
                     android:textSize="20sp" />
 
@@ -134,7 +133,6 @@
                     android:background="@null"
                     android:gravity="left"
                     android:singleLine="true"
-                    android:text="Targu Mures"
                     android:textColor="@color/primary_text"
                     android:textSize="20sp" />
 
@@ -172,7 +170,6 @@
                     android:layout_weight="0.5"
                     android:gravity="right"
                     android:singleLine="true"
-                    android:text="2015-01-10"
                     android:textColor="@color/secondary_text"
                     android:textSize="20sp" />
 
@@ -211,7 +208,6 @@
                     android:layout_weight="0.7"
                     android:gravity="right"
                     android:singleLine="true"
-                    android:text="35"
                     android:textColor="@color/secondary_text"
                     android:textSize="20sp" />
 
@@ -226,7 +222,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/text_view_passengers"
+                android:id="@+id/text_view_passengers_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"

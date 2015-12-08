@@ -17,8 +17,7 @@
         <com.github.siyamed.shapeimageview.CircularImageView
             android:id="@+id/card_view_profile_image"
             android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/profile_image" />
+            android:layout_height="25dp" />
 
         <TextView
             android:id="@+id/text_view_passenger_name"

@@ -143,7 +143,6 @@ public class SearchRouteFragment extends Fragment {
                                     Log.d("too", obj.get("destination").toString());
                                     routeList.add(obj);
 
-                                    String objID = obj.getObjectId();
                                 }
 
                             }
@@ -163,7 +162,7 @@ public class SearchRouteFragment extends Fragment {
                                 alert.show();
                             }
 
-                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList);
+                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList,SearchRouteFragment.this, getContext());
                             recList.setAdapter(routesAdapter);
 
 

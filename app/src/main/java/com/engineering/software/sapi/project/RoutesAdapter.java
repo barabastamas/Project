@@ -1,6 +1,8 @@
 package com.engineering.software.sapi.project;
 
-import android.app.FragmentTransaction;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +32,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
         protected String date;
         private float price;
         protected int numberOfPassanger;
-        protected String objID;
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,7 +43,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
         protected TextView rPrice;
         protected TextView rNumbOfPass;
         protected CardView cardView;
-        protected FragmentActivity myContext;
+        protected String objectId;
+        protected FragmentManager manager;
         protected Fragment fragment;
 
         public ViewHolder(View itemView) {
@@ -64,13 +67,14 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
                     Log.d("LogCard", "yes");
                     //Toast.makeText(v.getContext(), "View", Toast.LENGTH_SHORT).show();
                     Log.d("Log", "Button was pressed");
-                    android.app.FragmentManager manager ;
-                    manager = myContext.getFragmentManager();
-                    EditRouteFragment fragment;
-                    fragment= new EditRouteFragment();
-                    FragmentTransaction ft = manager.beginTransaction();
-                    //ft.replace(R.id.content,fragment) ;
-                    ft.addToBackStack("EditRouteFragment");
+                    Fragment fragment;
+                    fragment= new DetailRouteFragment();
+                    FragmentTransaction ft = parentFragment.getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content,fragment) ;
+                    ft.addToBackStack("DetailRouteFragment");
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Object_ID", objectId);
                     ft.commit();
 
                 }
@@ -83,8 +87,12 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     }
 
     private List<ParseObject> routeList;
-    public RoutesAdapter(List<ParseObject> routeList){
+    static Fragment parentFragment;
+    final LayoutInflater layoutInflater;
+    public RoutesAdapter(List<ParseObject> routeList,Fragment fragment, Context context){
         this.routeList = routeList;
+        layoutInflater = LayoutInflater.from(context);
+        parentFragment = fragment;
     }
     public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_routes, parent, false);
@@ -95,11 +103,13 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int i) {
         ParseObject ri = routeList.get(i);
+        holder.objectId = ri.getObjectId();
         holder.rFrom.setText(ri.get("from").toString());
         holder.rTo.setText(ri.get("destination").toString());
         holder.rDate.setText(ri.get("date").toString());
         holder.rPrice.setText(ri.get("price").toString());
         holder.rNumbOfPass.setText(ri.get("numberOfPassanger").toString());
+
 
     }
 

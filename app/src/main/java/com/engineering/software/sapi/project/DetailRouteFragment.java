@@ -8,7 +8,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,15 +22,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -55,12 +58,14 @@ public class DetailRouteFragment extends Fragment {
     private GoogleMap map;
 
     private RecyclerView recyclerView;
+    private FloatingActionButton fabSubscribe;
 
     private TextView textViewName;
     private TextView textViewStart;
     private TextView textViewDestination;
     private TextView textViewDate;
     private TextView textViewPrice;
+    private TextView textViewPassengersList;
     private ImageView imageViewProfileImage;
 
     private Button buttonCall;
@@ -68,10 +73,12 @@ public class DetailRouteFragment extends Fragment {
 
     private ParseUser routeOwner;
     private ParseObject route;
+    private Bitmap img;
 
-    private List<String> passengers;
+    private List<Pair<ParseUser, Bitmap>> passengers;
 
     private String ownerName;
+    private String routeObjectId;
     private String starting;
     private String destination;
     private String date;
@@ -86,6 +93,9 @@ public class DetailRouteFragment extends Fragment {
     private Marker markerStart;
     private Marker markerDestination;
 
+    private Bundle arg;
+    private ParseUser user;
+
 
     public DetailRouteFragment() {
         // Required empty public constructor
@@ -95,6 +105,7 @@ public class DetailRouteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
+
     }
 
     @Override
@@ -104,16 +115,34 @@ public class DetailRouteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail_route, container, false);
 
         /*
+         * Get data from caller fragment ( SearchRoutes )
+         */
+        arg = getArguments();
+
+        if (arg != null) {
+            routeObjectId = getArguments().getString("Object_ID");
+            Log.d("ARGUMENTS", "Arguments not null " + routeObjectId);
+        } else {
+            Log.d("ARGUMENTS", "Arguments null");
+        }
+
+        /*
          * Initialization
          */
         initialize(view);
-
-        getData();
 
         /*
          * Get route and the user who published it
          */
         getRoute();
+//        getData();
+
+        Log.d("LOC", starting + " " + destination);
+
+        /*
+         * Populate recycler view with passengers
+         */
+        setupRecycleView();
 
         /*
          * Initialize Map.
@@ -123,28 +152,15 @@ public class DetailRouteFragment extends Fragment {
         /*
          * Setup map
          */
+        setupMap();
 
-        getActivity().runOnUiThread(new Runnable() {
+        /*fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                try {
-                    mapView.onCreate(bundle);
-                    if (map == null) {
-                        map = mapView.getMap();
-                        if (map != null) {
-                            setupMap();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onClick(View v) {
+                route.put("passengers", currentUser.getObjectId());
+                route.saveEventually();
             }
-        });
-
-        /*
-         * Populate recycler view with passengers
-         */
-        setupRecycleView();
+        });*/
 
 
         return view;
@@ -160,10 +176,21 @@ public class DetailRouteFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        /*addPassengers();*/
-
-
         getRoutePassengers();
+    }
+
+    /*
+     * Get user
+     */
+    private ParseUser getUser(String string) {
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        try {
+            Log.d("USER", "User found");
+            return userQuery.get(string);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /*
@@ -173,39 +200,86 @@ public class DetailRouteFragment extends Fragment {
         passengers = new ArrayList<>();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
-        /*query.whereEqualTo("Yht8tYYaHl", "objectID");*/
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
                     for (ParseObject obj : objects) {
-                        if (obj.getObjectId().equals("Yht8tYYaHl")) {
+                        if (obj.getObjectId().equals(routeObjectId)) {
                             List<String> list = obj.getList("passengers");
-                            for (String s : list) {
-                                Log.d("PASSENGERS", s);
-                                ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
-                                try {
-                                    String user = userQuery.get(s).get("name").toString();
-                                    /* ToDo
-                                     * ListView<String, Bitmap> Bitmap - user profile picture
-                                     * send user name and profile picture
-                                     * receiver these in the adapter
-                                     * show image in the image view
-                                     */
+                            if (list != null) {
+                                textViewPassengersList.setText(R.string.passengers);
+                                for (String s : list) {
+                                    Log.d("PASSENGERS", s);
 
-                                    passengers.add(user);
-                                } catch (ParseException e1) {
-                                    e1.printStackTrace();
+                                    // get route passenger
+                                    user = getUser(s);
+
+                                    // get profile image of the passenger
+                                    ParseFile profileImage = null;
+                                    if (user != null) {
+                                        profileImage = (ParseFile) user.get("profilePic");
+                                    }
+                                    if (profileImage != null) {
+                                        Log.d("IMAGE", "Image");
+
+                                        try {
+                                            byte[] data = profileImage.getData();
+                                            img = BitmapFactory.decodeByteArray(
+                                                    data,
+                                                    0,
+                                                    data.length
+                                            );
+                                            if (img != null) {
+                                                Log.d("IMAGE", "Image from parse decoded!");
+                                            }
+                                        } catch (ParseException e1) {
+                                            e1.printStackTrace();
+                                        }
+
+                                        /*profileImage.getDataInBackground(new GetDataCallback() {
+                                            @Override
+                                            public void done(byte[] data, ParseException e) {
+                                                if (e == null) {
+                                                    img = BitmapFactory.decodeByteArray(
+                                                            data,
+                                                            0,
+                                                            data.length
+                                                    );
+                                                    if (img != null) {
+                                                        Log.d("IMAGE", "Image from parse decoded!");
+                                                    }
+                                                } else {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });*/
+                                    } else {
+                                        Log.d("IMAGE", "No image. Decoding default image");
+                                        img = BitmapFactory.decodeResource(
+                                                getResources(),
+                                                R.drawable.ic_profile_black);
+                                    }
+
+                                    passengers.add(Pair.create(user, img));
                                 }
+                            } else {
+                                textViewPassengersList.setText(R.string.no_passengers);
                             }
                         }
                     }
-                    PassangersAdapter adapter = new PassangersAdapter(getContext(), passengers, DetailRouteFragment.this);
-                    recyclerView.setAdapter(adapter);
 
                     Log.d("PASSENGERS", passengers.size() + "");
                 } else {
                     e.printStackTrace();
+                }
+                if (passengers != null) {
+                    PassengersAdapter adapter = new PassengersAdapter(
+                            getContext(),
+                            passengers,
+                            DetailRouteFragment.this
+                    );
+                    recyclerView.setAdapter(adapter);
                 }
             }
         });
@@ -213,81 +287,87 @@ public class DetailRouteFragment extends Fragment {
 
     private void getRoute() {
         ParseQuery<ParseObject> routes = ParseQuery.getQuery("Routes");
-        routes.getInBackground("Yht8tYYaHl", new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject object, ParseException e) {
-                if (e == null) {
+        try {
+            route = routes.get(routeObjectId);
+            Log.d("OWNER", route.get("routeOwner").toString());
 
-                    Log.d("OWNER", object.get("routeOwner").toString());
-
-                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
-                    try {
-                        routeOwner = userQuery.get(object.get("routeOwner").toString());
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    Log.d("OWNER", routeOwner.get("name").toString());
-
-                    textViewName.setText(routeOwner.get("name").toString());
-                    textViewStart.setText(object.get("from").toString());
-                    textViewDestination.setText(object.get("destination").toString());
-                    textViewDate.setText(object.get("date").toString());
-                    textViewPrice.setText(object.get("price").toString());
-
-                    ParseFile profileImage = (ParseFile) currentUser.get("profilePic");
-                    if (profileImage != null) {
-                        Log.d("IMAGE", "Image");
-                        profileImage.getDataInBackground(new GetDataCallback() {
-                            @Override
-                            public void done(byte[] data, ParseException e) {
-                                if (e == null) {
-                                    Bitmap img = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                    if (img != null) {
-                                        imageViewProfileImage.setImageBitmap(img);
-                                    }
-                                } else {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    } else {
-                        Log.d("IMAGE", "No image");
-                    }
-
-                    buttonCall.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intentCall = new Intent(Intent.ACTION_CALL);
-                            intentCall.setData(Uri.parse("tel:" + routeOwner.get("phoneNumber")));
-                            startActivity(intentCall);
-                        }
-                    });
-
-                    buttonSendEmail.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
-                            intentSendEmail.setType("message/rfc822");
-                            intentSendEmail.putExtra(Intent.EXTRA_EMAIL, new String[]{"tamas_27@yahoo.co.uk"});
-                            try {
-                                startActivity(Intent.createChooser(intentSendEmail, "Send email with..."));
-                            } catch (android.content.ActivityNotFoundException e) {
-                                Toast.makeText(getContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } else {
-                    e.printStackTrace();
-                }
+            ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+            try {
+                routeOwner = userQuery.get(route.get("routeOwner").toString());
+            } catch (ParseException e1) {
+                e1.printStackTrace();
             }
-        });
+
+            Log.d("OWNER", routeOwner.get("name").toString());
+
+            textViewName.setText(routeOwner.get("name").toString());
+            textViewStart.setText(route.get("from").toString());
+            textViewDestination.setText(route.get("destination").toString());
+            textViewDate.setText(route.get("date").toString());
+            textViewPrice.setText(route.get("price").toString());
+
+            getData();
+
+            ParseFile profileImage = (ParseFile) currentUser.get("profilePic");
+            if (profileImage != null) {
+                Log.d("IMAGE", "Image");
+                profileImage.getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        if (e == null) {
+                            Bitmap img = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            if (img != null) {
+                                imageViewProfileImage.setImageBitmap(img);
+                            }
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                Log.d("IMAGE", "No image. Loading default profile image");
+                imageViewProfileImage.setImageBitmap(BitmapFactory.decodeResource(
+                                getResources(),
+                                R.drawable.profile_image)
+                );
+            }
+
+            buttonCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentCall = new Intent(Intent.ACTION_CALL);
+                    intentCall.setData(Uri.parse("tel:" + routeOwner.get("phoneNumber")));
+                    startActivity(intentCall);
+                }
+            });
+
+            buttonSendEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
+                    intentSendEmail.setType("message/rfc822");
+                    intentSendEmail.putExtra(Intent.EXTRA_EMAIL, new String[]{"tamas_27@yahoo.co.uk"});
+                    try {
+                        startActivity(Intent.createChooser(intentSendEmail, "Send email with..."));
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Toast.makeText(
+                                getContext(),
+                                "There are no email clients installed.",
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initialize(View view) {
         currentUser = ParseUser.getCurrentUser();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_passenger);
+        fabSubscribe = (FloatingActionButton) view.findViewById(R.id.fab_subscribe);
 
         mapView = (MapView) view.findViewById(R.id.map);
 
@@ -297,6 +377,7 @@ public class DetailRouteFragment extends Fragment {
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
         textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
         imageViewProfileImage = (ImageView) view.findViewById(R.id.detail_route_profile_image);
+        textViewPassengersList = (TextView) view.findViewById(R.id.text_view_passengers_list);
 
         buttonCall = (Button) view.findViewById(R.id.button_call);
         buttonSendEmail = (Button) view.findViewById(R.id.button_send_email);
@@ -311,23 +392,28 @@ public class DetailRouteFragment extends Fragment {
      * Sets up the Map
      */
     private void setupMap() {
+        mapView.onCreate(bundle);
+        if (map == null) {
+            map = mapView.getMap();
+            if (map != null) {
+                // Get starting location coordinates
+                getCoordinatesStarting(starting);
+                // Convert starting location coordinates to latitude and longitude
+                getLatLngStarting();
 
-        // Get starting location coordinates
-        getCoordinatesStarting(starting);
-        // Convert starting location coordinates to latitude and longitude
-        getLatLngStarting();
+                // Get destination coordinates
+                getCoordinatesDestination(destination);
+                // Convert destination coordinates to latitude and longitude
+                getLatLngDestination();
 
-        // Get destination coordinates
-        getCoordinatesDestination(destination);
-        // Convert destination coordinates to latitude and longitude
-        getLatLngDestination();
+                // Add markers to starting location and destination
+                addMarkersToStart(latLngStarting);
+                addMarkersToDestination(latLngDestination);
 
-        // Add markers to starting location and destination
-        addMarkersToStart(latLngStarting);
-        addMarkersToDestination(latLngDestination);
-
-        // Move camera to startin location
-        moveToCoordinates(latLngStarting);
+                // Move camera to startin location
+                moveToCoordinates(latLngStarting, latLngDestination);
+            }
+        }
     }
 
 
@@ -383,8 +469,23 @@ public class DetailRouteFragment extends Fragment {
     /*
      * Move map to the {latLngStarting} coordinates
      */
-    private void moveToCoordinates(LatLng latLngStarting) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStarting, (float) 13.0));
+    private void moveToCoordinates(final LatLng start, final LatLng dest) {
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(start);
+                builder.include(dest);
+
+                LatLngBounds bounds = builder.build();
+
+                // offset from edges of the map in pixels
+                int padding = 100;
+
+
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+            }
+        });
     }
 
     /*
@@ -402,7 +503,8 @@ public class DetailRouteFragment extends Fragment {
                 ArrayList<LatLng> latitudeLongitude = new ArrayList<>(addresses.size());
                 for (Address address : addresses) {
                     if (address.hasLatitude() && address.hasLongitude()) {
-                        latitudeLongitude.add(new LatLng(address.getLatitude(), address.getLongitude()));
+                        latitudeLongitude.add(
+                                new LatLng(address.getLatitude(), address.getLongitude()));
                     }
                 }
                 return latitudeLongitude;

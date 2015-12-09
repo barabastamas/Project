@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:text="Set date" />
 
-    <EditText
+    <TextView
         android:id="@+id/etxt_fromdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

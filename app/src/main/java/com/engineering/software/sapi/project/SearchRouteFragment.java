@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.preference.DialogPreference;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -40,8 +43,7 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class SearchRouteFragment extends Fragment {
-    private EditText fromDateEtxt;
-    private EditText toDateEtxt;
+    private TextView fromDateEtxt;
     private String[] countries;
     private ArrayAdapter<String> adapter;
 
@@ -65,7 +67,7 @@ public class SearchRouteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view = inflater.inflate(R.layout.fragment_search_route, container, false);
+        final View view = inflater.inflate(R.layout.fragment_search_route, container, false);
 
         final AutoCompleteTextView etFrom = (AutoCompleteTextView) view.findViewById(R.id.fromid);
         countries = getResources().getStringArray(R.array.city_array);
@@ -80,7 +82,7 @@ public class SearchRouteFragment extends Fragment {
         final Button searchButton = (Button) view.findViewById(R.id.button);
         Button setDateButton = (Button) view.findViewById(R.id.date_button);
 
-        fromDateEtxt = (EditText) view.findViewById(R.id.etxt_fromdate);
+        fromDateEtxt = (TextView) view.findViewById(R.id.etxt_fromdate);
 
         final RecyclerView recList = (RecyclerView) view.findViewById(R.id.recyclerview);
         recList.setHasFixedSize(true);
@@ -115,20 +117,8 @@ public class SearchRouteFragment extends Fragment {
 
                 if (etFrom.getText().toString().equals("") || etTo.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("Error Date")) {
 
+                    Toast.makeText(view.getContext(), "Error location or date!", Toast.LENGTH_LONG).show();
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                    alertDialogBuilder.setTitle("Error");
-                    alertDialogBuilder.setMessage("Error location or date!");
-                    alertDialogBuilder.setCancelable(false);
-                    alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, just close
-                            // the dialog box and do nothing
-                            dialog.cancel();
-                        }
-                    });
-                    AlertDialog alert = alertDialogBuilder.create();
-                    alert.show();
 
                 } else {
                     routeList = new ArrayList<>();
@@ -147,19 +137,8 @@ public class SearchRouteFragment extends Fragment {
 
                             }
                             if (routeList.size() == 0) {
-                                //Log.d("ures","igen");
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                                alertDialogBuilder.setTitle("No results");
-                                alertDialogBuilder.setCancelable(false);
-                                alertDialogBuilder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // if this button is clicked, just close
-                                        // the dialog box and do nothing
-                                        dialog.cancel();
-                                    }
-                                });
-                                AlertDialog alert = alertDialogBuilder.create();
-                                alert.show();
+                                Toast.makeText(view.getContext(), "Empty", Toast.LENGTH_LONG).show();
+
                             }
 
                             RoutesAdapter routesAdapter = new RoutesAdapter(routeList,SearchRouteFragment.this, getContext());

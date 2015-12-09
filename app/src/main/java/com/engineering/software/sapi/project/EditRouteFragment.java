@@ -2,12 +2,15 @@ package com.engineering.software.sapi.project;
 
 
 import android.app.DatePickerDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,12 +26,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -43,7 +49,7 @@ import java.util.Locale;
  */
 public class EditRouteFragment extends Fragment {
 
-    private List<String> passengers;
+    private List<Pair<ParseUser, Bitmap>> passengers;
 
     private CoordinatorLayout coordinatorLayout;
     private RecyclerView recyclerView;
@@ -60,14 +66,20 @@ public class EditRouteFragment extends Fragment {
     private EditText editTextDestination;
     private EditText editTextPrice;
     private TextView textViewDate;
+    private TextView textViewPassengersList;
 
+    private String routeObjectId;
     private String starting;
     private String destination;
     private String date;
     private String price;
+    private Bitmap img;
 
     private SimpleDateFormat dateFormat;
     private DatePickerDialog datePickerDialog;
+
+    private ParseObject route;
+    private ParseUser user;
 
     private boolean isEditEnabled = false;
 
@@ -79,6 +91,8 @@ public class EditRouteFragment extends Fragment {
     private MarkerOptions markerOptionDestination;
     private Marker markerStart;
     private Marker markerDestination;
+
+    private Bundle arg;
 
     public EditRouteFragment() {
         // Required empty public constructor
@@ -100,6 +114,19 @@ public class EditRouteFragment extends Fragment {
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         /*
+         * Get data from caller fragment ( OwnRoutes )
+         */
+        /*arg = getArguments();
+
+        if (arg != null) {
+            routeObjectId = getArguments().getString("Object_ID");
+            Log.d("ARGUMENTS", "Arguments not null " + routeObjectId);
+        } else {
+            Log.d("ARGUMENTS", "Arguments null");
+        }
+*/
+
+        /*
          * Initialization
          */
         initialize(view);
@@ -107,7 +134,13 @@ public class EditRouteFragment extends Fragment {
         /*
          * Setup the recycle view
          */
-        setupRecycleView();
+        try {
+            setupRecycleView();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        getData();
 
         /*
          * Initialize Map.
@@ -153,7 +186,7 @@ public class EditRouteFragment extends Fragment {
                         // Add marker to starting location
                         addMarkersToStart(latLngStarting);
                         // Move camera to starting location
-                        moveToCoordinates(latLngStarting);
+                        moveToCoordinates(latLngStarting, latLngDestination);
                     }
                     if (!newDestination.equals(destination)) {
 
@@ -296,6 +329,7 @@ public class EditRouteFragment extends Fragment {
      * Sets up the Map
      */
     private void setupMap() {
+
         mapView.onCreate(bundle);
         if (map == null) {
             map = mapView.getMap();
@@ -315,7 +349,7 @@ public class EditRouteFragment extends Fragment {
                 addMarkersToDestination(latLngDestination);
 
                 // Move camera to startin location
-                moveToCoordinates(latLngStarting);
+                moveToCoordinates(latLngStarting, latLngDestination);
 
                 /*PolylineOptions polylineOptions = new PolylineOptions();
                 *//*polylineOptions.geodesic(true);*//*
@@ -325,14 +359,34 @@ public class EditRouteFragment extends Fragment {
         }
     }
 
-    private void moveToCoordinates(LatLng latLngStarting) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngStarting, (float) 13.0));
+
+    /*
+     * Move map to the {latLngStarting} coordinates
+     */
+    private void moveToCoordinates(final LatLng start, final LatLng dest) {
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(start);
+                builder.include(dest);
+
+                LatLngBounds bounds = builder.build();
+
+                // offset from edges of the map in pixels
+                int padding = 100;
+
+
+                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+            }
+        });
     }
+
 
     /*
      * Sets up the recycle view
      */
-    private void setupRecycleView() {
+    private void setupRecycleView() throws ParseException {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(false);
 
@@ -341,10 +395,7 @@ public class EditRouteFragment extends Fragment {
 
         /*addPassengers();*/
 
-
         getRoutePassengers();
-
-
     }
 
     /*
@@ -358,14 +409,14 @@ public class EditRouteFragment extends Fragment {
         mapView = (MapView) view.findViewById(R.id.map);
 
         fabEdit = (FloatingActionButton) view.findViewById(R.id.fabEdit);
-        textViewPassengers = (TextView) view.findViewById(R.id.text_view_passengers);
 
         editTextFrom = (EditText) view.findViewById(R.id.edit_text_from);
         editTextDestination = (EditText) view.findViewById(R.id.edit_text_destination);
         editTextPrice = (EditText) view.findViewById(R.id.edit_text_price);
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
+        textViewPassengersList = (TextView) view.findViewById(R.id.text_view_passengers_list);
 
-        getData();
+
         makeAllEditTextNotEditable();
     }
 
@@ -404,44 +455,84 @@ public class EditRouteFragment extends Fragment {
     }
 
     /*
+     * Get user
+     */
+    private ParseUser getUser(String string) {
+        ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+        try {
+            Log.d("USER", "User found");
+            return userQuery.get(string);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*
      * Get passengers of a route
      */
     private void getRoutePassengers() {
         passengers = new ArrayList<>();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
-        /*query.whereEqualTo("Yht8tYYaHl", "objectID");*/
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    for (ParseObject obj : objects) {
-                        if (obj.getObjectId().equals("Yht8tYYaHl")) {
-                            List<String> list = obj.getList("passengers");
-                            for (String s : list) {
-                                Log.d("PASSENGERS", s);
-                                passengers.add(s);
-                            }
-                        }
+
+        try {
+            route = query.get("Yht8tYYaHl");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (route != null) {
+            editTextFrom.setText(route.get("from").toString());
+            editTextDestination.setText(route.get("destination").toString());
+            editTextPrice.setText(route.get("price").toString());
+            textViewDate.setText(route.get("date").toString());
+
+            List<String> list = route.getList("passengers");
+            if (list != null) {
+                textViewPassengersList.setText(R.string.passengers);
+                for (String s : list) {
+                    Log.d("PASSENGERS", s);
+
+                    // get route passenger
+                    user = getUser(s);
+
+                    // get profile image of the passenger
+                    ParseFile profileImage = null;
+                    if (user != null) {
+                        profileImage = (ParseFile) user.get("profilePic");
                     }
-                    RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(), passengers, EditRouteFragment.this);
-                    recyclerView.setAdapter(adapter);
+                    if (profileImage != null) {
+                        Log.d("IMAGE", "Image");
 
-                    Log.d("PASSENGERS", passengers.size() + "");
-                } else {
-                    e.printStackTrace();
+                        try {
+                            byte[] data = profileImage.getData();
+                            img = BitmapFactory.decodeByteArray(
+                                    data,
+                                    0,
+                                    data.length
+                            );
+                            if (img != null) {
+                                Log.d("IMAGE", "Image from parse decoded!");
+                            }
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        Log.d("IMAGE", "No image");
+                        img = BitmapFactory.decodeResource(getResources(), R.drawable.ic_profile_black);
+                    }
+
+                    passengers.add(Pair.create(user, img));
                 }
+            } else {
+                textViewPassengersList.setText(R.string.no_passengers);
             }
-        });
-    }
 
-    private void addPassengers() {
-        passengers = new ArrayList<>();
-        passengers.add("Biro Zsolt");
-        passengers.add("Gabor Ata");
-        passengers.add("Nagy Norbi");
-        passengers.add("Zold Attila");
-        passengers.add("Barabas Tamas");
+            if (passengers != null) {
+                PassengersAdapter adapter = new PassengersAdapter(getContext(), passengers, EditRouteFragment.this);
+                recyclerView.setAdapter(adapter);
+            }
+        }
     }
 
     @Override

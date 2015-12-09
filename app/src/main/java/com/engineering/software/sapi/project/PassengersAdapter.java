@@ -1,38 +1,50 @@
 package com.engineering.software.sapi.project;
 
+import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.engineering.software.sapi.project.Profile.ProfileFragment;
+import com.parse.ParseUser;
 
 import java.util.List;
 
-public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.ViewHolder> {
+public class PassengersAdapter extends RecyclerView.Adapter<PassengersAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView passengerName;
         Button buttonViewProfile;
+        ImageView imageViewProfileImage;
+        String userObjectID;
 
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view_passenger);
             buttonViewProfile = (Button) itemView.findViewById(R.id.button_view_profile);
             passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);
+            imageViewProfileImage = (ImageView) itemView.findViewById(R.id.card_view_profile_image);
 
             buttonViewProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (parentFragment != null) {
+                        Bundle arg = new Bundle();
+                        arg.putString("userObjectID", userObjectID);
+
                         Fragment fragment = new ProfileFragment();
+                        fragment.setArguments(arg);
 
                         FragmentTransaction fragmentTransaction = parentFragment.getFragmentManager().beginTransaction();
 
@@ -46,16 +58,15 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    static EditRouteFragment parentFragment = null;
+    static Fragment parentFragment = null;
     final LayoutInflater layoutInflater;
 
-    List<String> passengers;
+    List<Pair<ParseUser, Bitmap>> passengers;
 
-    RecycleViewAdapter(Context context, List<String> passengers, EditRouteFragment editRouteFragment) {
+    PassengersAdapter(Context context, List<Pair<ParseUser, Bitmap>> passengers, Fragment fragment) {
         layoutInflater = LayoutInflater.from(context);
         this.passengers = passengers;
-        parentFragment = editRouteFragment;
-
+        parentFragment = fragment;
     }
 
     @Override
@@ -67,7 +78,9 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.passengerName.setText(passengers.get(position));
+        holder.userObjectID = passengers.get(position).first.getObjectId();
+        holder.passengerName.setText(passengers.get(position).first.get("name").toString());
+        holder.imageViewProfileImage.setImageBitmap(passengers.get(position).second);
     }
 
     @Override

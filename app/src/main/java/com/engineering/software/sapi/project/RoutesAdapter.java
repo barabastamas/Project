@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by norby on 11/26/2015.
  */
-public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder>{
+public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder> {
 
     public class RouteInfo {
         protected String from;
@@ -58,7 +58,6 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
             cardView = (CardView) itemView.findViewById(R.id.card_view);
 
 
-
             cardView.setOnClickListener(new View.OnClickListener() {
 
 
@@ -67,14 +66,18 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
                     Log.d("LogCard", "yes");
                     //Toast.makeText(v.getContext(), "View", Toast.LENGTH_SHORT).show();
                     Log.d("Log", "Button was pressed");
-                    Fragment fragment;
-                    fragment= new DetailRouteFragment();
-                    FragmentTransaction ft = parentFragment.getFragmentManager().beginTransaction();
-                    ft.replace(R.id.content,fragment) ;
-                    ft.addToBackStack("DetailRouteFragment");
 
                     Bundle bundle = new Bundle();
                     bundle.putString("Object_ID", objectId);
+
+                    Fragment fragment;
+                    fragment = new DetailRouteFragment();
+                    fragment.setArguments(bundle);
+
+                    FragmentTransaction ft = parentFragment.getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content, fragment);
+                    ft.addToBackStack("DetailRouteFragment");
+
                     ft.commit();
 
                 }
@@ -89,11 +92,13 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     private List<ParseObject> routeList;
     static Fragment parentFragment;
     final LayoutInflater layoutInflater;
-    public RoutesAdapter(List<ParseObject> routeList,Fragment fragment, Context context){
+
+    public RoutesAdapter(List<ParseObject> routeList, Fragment fragment, Context context) {
         this.routeList = routeList;
         layoutInflater = LayoutInflater.from(context);
         parentFragment = fragment;
     }
+
     public ViewHolder onCreateViewHolder(ViewGroup parent, int i) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_routes, parent, false);
         return new ViewHolder(itemView);
@@ -117,7 +122,6 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
     public int getItemCount() {
         return routeList.size();
     }
-
 
 
 }

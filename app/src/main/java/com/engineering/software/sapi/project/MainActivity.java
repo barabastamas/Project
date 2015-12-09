@@ -3,6 +3,8 @@ package com.engineering.software.sapi.project;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,15 +16,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
-import com.engineering.software.sapi.project.LoginRegister.GetUserDetails;
 import com.engineering.software.sapi.project.Profile.ProfileFragment;
-import com.facebook.Profile;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,11 +74,35 @@ public class MainActivity extends AppCompatActivity {
          * Put current user name to navigation header
          */
         TextView textViewCurrentUserName = (TextView) headerLayout.findViewById(R.id.navigation_drawer_name);
+        TextView textViewCurrentUserEmail = (TextView) headerLayout.findViewById(R.id.navigation_drawer_email);
+        final ImageView imageViewCurrentUserProfileImage = (ImageView) headerLayout.findViewById(R.id.navigation_drawer_profile_image);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             try {
-                textViewCurrentUserName.setText(currentUser.getUsername());
+                textViewCurrentUserName.setText(currentUser.get("name").toString());
+                textViewCurrentUserEmail.setText(currentUser.get("email").toString());
+
+                ParseFile profileImage = (ParseFile) currentUser.get("profilePic");
+                if (profileImage != null) {
+                    Log.d("IMAGE", "Image");
+                    profileImage.getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            if (e == null) {
+                                Bitmap img = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                if (img != null) {
+                                    imageViewCurrentUserProfileImage.setImageBitmap(img);
+                                }
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    Log.d("IMAGE", "No image");
+                }
+
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -139,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = ProfileFragment.class;
                 break;
             case R.id.own_routes:
-                fragmentClass = OwnRoutesFragment.class;
+                fragmentClass = DetailRouteFragment.class;
                 break;
             case R.id.add_route:
                 fragmentClass = AddRouteFragment.class;
@@ -198,7 +230,4 @@ public class MainActivity extends AppCompatActivity {
          */
         setActionBarTitle("Main");
     }
-
-
-
 }

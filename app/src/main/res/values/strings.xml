@@ -39,7 +39,7 @@
     <string name="facebook_app_id">1656238304659370</string>
     <string name="maxp">Max person</string>
     <string name="addr">add</string>
-    <string name="from_date">From date</string>
+
     <string-array name="city_array">
         <item>Bucharest</item>
         <item>Cluj-Napoca</item>

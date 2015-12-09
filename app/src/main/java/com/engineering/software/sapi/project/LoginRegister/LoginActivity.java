@@ -1,6 +1,11 @@
 package com.engineering.software.sapi.project.LoginRegister;
 
 import android.app.Activity;
+
+
+import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -19,9 +25,17 @@ import android.widget.Toast;
 
 import com.engineering.software.sapi.project.MainActivity;
 import com.engineering.software.sapi.project.R;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.RequestPasswordResetCallback;
+
+import java.util.List;
+
 
 public class LoginActivity extends Activity {
 
@@ -29,6 +43,7 @@ public class LoginActivity extends Activity {
     EditText etUserName, etPassword;
     TextView tvForgPass, tvSignUp;
     CheckBox saveLoginCheckBox;
+
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
@@ -44,7 +59,7 @@ public class LoginActivity extends Activity {
         etPassword = (EditText) findViewById(R.id.etPassword);
         tvForgPass = (TextView) findViewById(R.id.tvForgotPass);
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
-        saveLoginCheckBox = (CheckBox)findViewById(R.id.cbRememberMe);
+        saveLoginCheckBox = (CheckBox) findViewById(R.id.cbRememberMe);
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -85,17 +100,55 @@ public class LoginActivity extends Activity {
         tvForgPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                forgotPass(v);
             }
         });
 
     }
 
 
-
     private void registrate(View v) {
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
+    }
+
+    private void forgotPass(View v) {
+        final Dialog dialog = new Dialog(LoginActivity.this);
+        dialog.setContentView(R.layout.forgotpass_dialog);
+        dialog.setTitle("Forgot your password?");
+
+
+        tvForgPass.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                EditText enterMail = (EditText) dialog.findViewById(R.id.etEnterAddress);
+                Button sendMail = (Button) dialog.findViewById(R.id.sendButton);
+                final String to = enterMail.getText().toString().trim();
+                dialog.show();
+
+                sendMail.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ParseUser.requestPasswordResetInBackground(to,
+                                new RequestPasswordResetCallback() {
+                                    @Override
+                                    public void done(com.parse.ParseException e) {
+                                        if (e == null) {
+                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions.", Toast.LENGTH_LONG).show();
+                                            dialog.dismiss();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Something went wrong." + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+            }
+        });
+
     }
 
     private void login() {
@@ -126,7 +179,6 @@ public class LoginActivity extends Activity {
         }
 
 
-
         // Set up a progress dialog
         final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
         dialog.setMessage(getString(R.string.progress_login));
@@ -151,28 +203,19 @@ public class LoginActivity extends Activity {
                         loginPrefsEditor.clear();
                         loginPrefsEditor.commit();
                     }
-                    Toast.makeText(LoginActivity.this, "Login succesful!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                 }
             }
         });
     }
 
 
-    /*private void sendEmail(String emailTo,String emailText,String emailSubject){
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        emailTo = currentUser.getEmail();
-        emailSubject = currentUser.get
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{emailTo});
-        i.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
-        i.putExtra(Intent.EXTRA_TEXT   , emailText);
-    }
-*/
-
-
 }
+
+
+
 

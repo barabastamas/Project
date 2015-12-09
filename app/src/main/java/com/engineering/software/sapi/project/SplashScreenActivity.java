@@ -15,11 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.parse.Parse;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-
 import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
+import com.facebook.FacebookSdk;
+import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 
 public class SplashScreenActivity extends Activity {
 
@@ -51,6 +51,8 @@ public class SplashScreenActivity extends Activity {
         try {
             Parse.initialize(getApplication(), "NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg", "TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2");
             ParseInstallation.getCurrentInstallation().saveInBackground();
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +68,11 @@ public class SplashScreenActivity extends Activity {
         /*
          *  Initialize Parse
          */
+        FacebookSdk.sdkInitialize(getApplicationContext());
         initParse();
+        ParseFacebookUtils.initialize(this);
+
+
 
         /*
          *  Create TestObject

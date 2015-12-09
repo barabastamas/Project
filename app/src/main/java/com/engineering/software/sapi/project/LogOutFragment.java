@@ -1,12 +1,14 @@
 package com.engineering.software.sapi.project;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.engineering.software.sapi.project.LoginRegister.LoginActivity;
 import com.parse.ParseUser;
 
 
@@ -25,9 +27,14 @@ public class LogOutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        logout();
         return inflater.inflate(R.layout.fragment_log_in, container, false);
+    }
 
-
+    private void logout(){
+        ParseUser.logOut();
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        getActivity().finish();
     }
 
 

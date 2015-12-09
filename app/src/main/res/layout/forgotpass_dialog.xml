@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.engineering.software.sapi.project.LoginRegister.ForgotPass">
+
+
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etEnterAddress"
+        android:hint="Please enter your email address"
+        android:padding="10dp"
+        android:singleLine="true"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send email"
+        android:id="@+id/sendButton"
+        android:background="@drawable/buttonstyle"
+        android:layout_below="@+id/etEnterAddress"
+        android:layout_alignParentRight="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

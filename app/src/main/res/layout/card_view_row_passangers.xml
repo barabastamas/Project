@@ -14,6 +14,11 @@
         android:padding="6dp"
         android:weightSum="2">
 
+        <com.github.siyamed.shapeimageview.CircularImageView
+            android:id="@+id/card_view_profile_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+
         <TextView
             android:id="@+id/text_view_passenger_name"
             android:layout_width="wrap_content"

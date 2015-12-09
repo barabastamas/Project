@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,25 +13,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
+import com.engineering.software.sapi.project.MainActivity;
 import com.facebook.FacebookSdk;
 import com.engineering.software.sapi.project.R;
-import com.facebook.Profile;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
+
 import com.facebook.login.widget.LoginButton;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.Arrays;
+import java.util.List;
+
 
 public class SignUpActivity extends Activity {
 
     private Button bSignUp;
+    private LoginButton fbButton;
     private EditText etEnterName, etEnterPass, etPassAgain, etEnterEmail, etEnterUserName;
-    private CallbackManager mCallbackManager;
+
+
 
 
 
@@ -41,7 +43,6 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_signup);
-        mCallbackManager = CallbackManager.Factory.create();
 
 
         bSignUp = (Button) findViewById(R.id.signUpButton);
@@ -50,29 +51,13 @@ public class SignUpActivity extends Activity {
         etEnterPass = (EditText) findViewById(R.id.etEnterPassword);
         etPassAgain = (EditText) findViewById(R.id.etPassAgain);
         etEnterEmail = (EditText) findViewById(R.id.etEnterEmail);
-        LoginButton fbButton = (LoginButton) findViewById(R.id.fbButton);
+        fbButton = (LoginButton) findViewById(R.id.fbButton);
 
-        FacebookCallback<LoginResult> mCallback = new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Profile profile = Profile.getCurrentProfile();
-                if (profile != null) {
-                    Log.d("Welcome", profile.getName());
-                }
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        };
-
-        fbButton.registerCallback(mCallbackManager, mCallback);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
+            // Go to the user info activity
+            showUserDetailsActivity();
+        }
 
         etPassAgain.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -93,8 +78,44 @@ public class SignUpActivity extends Activity {
             }
         });
 
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbSignUp();
+            }
 
+        });
     }
+
+    private void fbSignUp(){
+        List<String> permissions = Arrays.asList("public_profile", "email");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (user == null) {
+                    Toast.makeText(SignUpActivity.this, "The user cancelled the Facebook login.", Toast.LENGTH_LONG).show();
+
+                } else if (user.isNew()) {
+                    Toast.makeText(SignUpActivity.this, "The user signed up and logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showUserDetailsActivity();
+                } else {
+                    Toast.makeText(SignUpActivity.this, "The ser logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showUserDetailsActivity();
+                }
+            }
+        });
+    }
+
+    private void showUserDetailsActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 
     private void signup() {
         String username = etEnterUserName.getText().toString().trim();
@@ -186,7 +207,7 @@ public class SignUpActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
 

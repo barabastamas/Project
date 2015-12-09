@@ -39,5 +39,6 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.google.android.gms:play-services:8.3.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
+    compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
 
 }

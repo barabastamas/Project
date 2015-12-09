@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,7 @@ public class DetailRouteFragment extends Fragment {
     private GoogleMap map;
 
     private RecyclerView recyclerView;
+    private FloatingActionButton fabSubscribe;
 
     private TextView textViewName;
     private TextView textViewStart;
@@ -151,6 +153,15 @@ public class DetailRouteFragment extends Fragment {
          * Setup map
          */
         setupMap();
+
+        /*fabSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                route.put("passengers", currentUser.getObjectId());
+                route.saveEventually();
+            }
+        });*/
+
 
         return view;
     }
@@ -356,6 +367,7 @@ public class DetailRouteFragment extends Fragment {
         currentUser = ParseUser.getCurrentUser();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_passenger);
+        fabSubscribe = (FloatingActionButton) view.findViewById(R.id.fab_subscribe);
 
         mapView = (MapView) view.findViewById(R.id.map);
 

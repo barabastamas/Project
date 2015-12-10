@@ -2,6 +2,7 @@ package com.engineering.software.sapi.project;
 
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -12,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -102,6 +104,8 @@ public class DetailRouteFragment extends Fragment {
 
     private Bundle arg;
 
+    boolean mSubscribed;
+
 
     public DetailRouteFragment() {
         // Required empty public constructor
@@ -118,7 +122,7 @@ public class DetailRouteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_detail_route, container, false);
+        final View view = inflater.inflate(R.layout.fragment_detail_route, container, false);
 
         /*
          * Get data from caller fragment ( SearchRoutes )
@@ -160,6 +164,11 @@ public class DetailRouteFragment extends Fragment {
          */
         setupMap();
 
+        /*
+         * Verify if the user already subscribed
+         */
+        verifySubscription(currentUser);
+
         fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,36 +178,14 @@ public class DetailRouteFragment extends Fragment {
 
                 Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
 
-                if (passengers.size() < numberOfPassenger) {
+                mSubscribed = verifySubscription(currentUser);
 
-                    // subscribedRoutes contains objectIDs of subscribed routes
-                    List<String> subscribedRoutes = currentUser.getList("subscribed");
-                    // subscribedPassengers contains objectIDs of passengers who have subscribed
-                    List<String> subscribedPassengers = route.getList("passengers");
-
-                    boolean mSubscribed = false;
-
-                    if (subscribedPassengers != null) {
-                        for (String subscriber : subscribedPassengers) {
-                            if (subscriber.equals(currentUser.getObjectId())) {
-                                mSubscribed = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (mSubscribed) {
-                        Log.d("SUBSCRIBE", "Already subscribed");
-
-                        Snackbar.make(
-                                coordinatorLayout,
-                                "You already subscribed",
-                                Snackbar.LENGTH_LONG)
-                                .show();
-                    } else {
-                        addSubscriber();
-                    }
+                if (passengers.size() < numberOfPassenger &&
+                        !mSubscribed) {
+                    addSubscriber();
                 } else {
                     Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+                    disableSubscription(fabSubscribe);
                     Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
                 }
 
@@ -210,6 +197,50 @@ public class DetailRouteFragment extends Fragment {
         return view;
     }
 
+    private boolean verifySubscription(ParseUser currentUser) {
+        /*// subscribedRoutes contains objectIDs of subscribed routes
+        List<String> subscribedRoutes = currentUser.getList("subscribed");*/
+
+        // subscribedPassengers contains objectIDs of passengers who have subscribed
+        List<String> subscribedPassengers = route.getList("passengers");
+
+        mSubscribed = false;
+
+        if (subscribedPassengers != null) {
+            for (String subscriber : subscribedPassengers) {
+                if (subscriber.equals(currentUser.getObjectId())) {
+                    mSubscribed = true;
+                    break;
+                }
+            }
+        }
+        if (mSubscribed) {
+            Log.d("SUBSCRIBE", "Already subscribed");
+
+            disableSubscription(fabSubscribe);
+            Snackbar.make(
+                    coordinatorLayout,
+                    "You're already subscribed",
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
+        return mSubscribed;
+    }
+
+    /*
+     * Disable subscribtion
+     * Set color of the floating action button to red
+     */
+    private void disableSubscription(FloatingActionButton fabSubscribe) {
+        fabSubscribe.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.red)));
+    }
+
+
+    /*
+     * Add subscriber
+     * User object id to routes
+     * Route object id to user
+     */
     private void addSubscriber() {
         if (routeOwner.getObjectId().equals(currentUser.getObjectId())) {
             Snackbar.make(
@@ -231,7 +262,6 @@ public class DetailRouteFragment extends Fragment {
             route.saveInBackground();
             currentUser.add("subscribed", routeObjectId);
             currentUser.saveInBackground();
-            /*setupRecycleView();*/
         }
     }
 

@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = ProfileFragment.class;
                 break;
             case R.id.own_routes:
-                fragmentClass = DetailRouteFragment.class;
+                fragmentClass = OwnRoutesFragment.class;
                 break;
             case R.id.add_route:
                 fragmentClass = AddRouteFragment.class;

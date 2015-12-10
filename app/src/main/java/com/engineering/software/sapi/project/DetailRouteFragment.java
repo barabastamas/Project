@@ -8,7 +8,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +40,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,9 +56,13 @@ public class DetailRouteFragment extends Fragment {
     private Bundle bundle;
 
     private ParseUser currentUser;
+    private ParseUser user;
 
     private MapView mapView;
     private GoogleMap map;
+
+    private CoordinatorLayout coordinatorLayout;
+    private PassengersAdapter adapter;
 
     private RecyclerView recyclerView;
     private FloatingActionButton fabSubscribe;
@@ -94,7 +101,6 @@ public class DetailRouteFragment extends Fragment {
     private Marker markerDestination;
 
     private Bundle arg;
-    private ParseUser user;
 
 
     public DetailRouteFragment() {
@@ -154,17 +160,81 @@ public class DetailRouteFragment extends Fragment {
          */
         setupMap();
 
-        /*fabSubscribe.setOnClickListener(new View.OnClickListener() {
+        fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                route.put("passengers", currentUser.getObjectId());
-                route.saveEventually();
+                Log.d("SUBSCRIBE", "fab clicked");
+
+                Integer numberOfPassenger = route.getInt("numberOfPassanger");
+
+                Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
+
+                if (passengers.size() < numberOfPassenger) {
+
+                    // subscribedRoutes contains objectIDs of subscribed routes
+                    List<String> subscribedRoutes = currentUser.getList("subscribed");
+                    // subscribedPassengers contains objectIDs of passengers who have subscribed
+                    List<String> subscribedPassengers = route.getList("passengers");
+
+                    boolean mSubscribed = false;
+
+                    if (subscribedPassengers != null) {
+                        for (String subscriber : subscribedPassengers) {
+                            if (subscriber.equals(currentUser.getObjectId())) {
+                                mSubscribed = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (mSubscribed) {
+                        Log.d("SUBSCRIBE", "Already subscribed");
+
+                        Snackbar.make(
+                                coordinatorLayout,
+                                "You already subscribed",
+                                Snackbar.LENGTH_LONG)
+                                .show();
+                    } else {
+                        addSubscriber();
+                    }
+                } else {
+                    Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+                    Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
+                }
+
+
             }
-        });*/
+        });
 
 
         return view;
     }
+
+    private void addSubscriber() {
+        if (routeOwner.getObjectId().equals(currentUser.getObjectId())) {
+            Snackbar.make(
+                    coordinatorLayout,
+                    "Don't be silly. You're the owner",
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        } else {
+            Log.d(
+                    "SUBSCRIBE",
+                    currentUser.get("name") + " subscribed for this route"
+            );
+            img = getProfileImage(currentUser);
+
+            passengers.add(Pair.create(currentUser, img));
+            adapter.notifyDataSetChanged();
+
+            route.add("passengers", currentUser.getObjectId());
+            route.saveInBackground();
+            currentUser.add("subscribed", routeObjectId);
+            currentUser.saveInBackground();
+            /*setupRecycleView();*/
+        }
+    }
+
 
     /*
      * Sets up the recycle view
@@ -197,7 +267,6 @@ public class DetailRouteFragment extends Fragment {
      * Get passengers of a route
      */
     private void getRoutePassengers() {
-        passengers = new ArrayList<>();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -216,50 +285,7 @@ public class DetailRouteFragment extends Fragment {
                                     user = getUser(s);
 
                                     // get profile image of the passenger
-                                    ParseFile profileImage = null;
-                                    if (user != null) {
-                                        profileImage = (ParseFile) user.get("profilePic");
-                                    }
-                                    if (profileImage != null) {
-                                        Log.d("IMAGE", "Image");
-
-                                        try {
-                                            byte[] data = profileImage.getData();
-                                            img = BitmapFactory.decodeByteArray(
-                                                    data,
-                                                    0,
-                                                    data.length
-                                            );
-                                            if (img != null) {
-                                                Log.d("IMAGE", "Image from parse decoded!");
-                                            }
-                                        } catch (ParseException e1) {
-                                            e1.printStackTrace();
-                                        }
-
-                                        /*profileImage.getDataInBackground(new GetDataCallback() {
-                                            @Override
-                                            public void done(byte[] data, ParseException e) {
-                                                if (e == null) {
-                                                    img = BitmapFactory.decodeByteArray(
-                                                            data,
-                                                            0,
-                                                            data.length
-                                                    );
-                                                    if (img != null) {
-                                                        Log.d("IMAGE", "Image from parse decoded!");
-                                                    }
-                                                } else {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });*/
-                                    } else {
-                                        Log.d("IMAGE", "No image. Decoding default image");
-                                        img = BitmapFactory.decodeResource(
-                                                getResources(),
-                                                R.drawable.ic_profile_black);
-                                    }
+                                    img = getProfileImage(user);
 
                                     passengers.add(Pair.create(user, img));
                                 }
@@ -274,7 +300,7 @@ public class DetailRouteFragment extends Fragment {
                     e.printStackTrace();
                 }
                 if (passengers != null) {
-                    PassengersAdapter adapter = new PassengersAdapter(
+                    adapter = new PassengersAdapter(
                             getContext(),
                             passengers,
                             DetailRouteFragment.this
@@ -283,6 +309,36 @@ public class DetailRouteFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private Bitmap getProfileImage(ParseUser parseUser) {
+        ParseFile profileImage = null;
+        if (parseUser != null) {
+            profileImage = (ParseFile) parseUser.get("profilePic");
+        }
+        if (profileImage != null) {
+            Log.d("IMAGE", "Image");
+
+            try {
+                byte[] data = profileImage.getData();
+                img = BitmapFactory.decodeByteArray(
+                        data,
+                        0,
+                        data.length
+                );
+                if (img != null) {
+                    Log.d("IMAGE", "Image from parse decoded!");
+                }
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        } else {
+            Log.d("IMAGE", "No image. Decoding default image");
+            img = BitmapFactory.decodeResource(
+                    getResources(),
+                    R.drawable.ic_profile_black);
+        }
+        return img;
     }
 
     private void getRoute() {
@@ -308,29 +364,8 @@ public class DetailRouteFragment extends Fragment {
 
             getData();
 
-            ParseFile profileImage = (ParseFile) currentUser.get("profilePic");
-            if (profileImage != null) {
-                Log.d("IMAGE", "Image");
-                profileImage.getDataInBackground(new GetDataCallback() {
-                    @Override
-                    public void done(byte[] data, ParseException e) {
-                        if (e == null) {
-                            Bitmap img = BitmapFactory.decodeByteArray(data, 0, data.length);
-                            if (img != null) {
-                                imageViewProfileImage.setImageBitmap(img);
-                            }
-                        } else {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            } else {
-                Log.d("IMAGE", "No image. Loading default profile image");
-                imageViewProfileImage.setImageBitmap(BitmapFactory.decodeResource(
-                                getResources(),
-                                R.drawable.profile_image)
-                );
-            }
+            img = getProfileImage(currentUser);
+            imageViewProfileImage.setImageBitmap(img);
 
             buttonCall.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -365,6 +400,10 @@ public class DetailRouteFragment extends Fragment {
 
     private void initialize(View view) {
         currentUser = ParseUser.getCurrentUser();
+
+        passengers = new ArrayList<>();
+
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view_passenger);
         fabSubscribe = (FloatingActionButton) view.findViewById(R.id.fab_subscribe);

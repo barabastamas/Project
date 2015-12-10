@@ -117,7 +117,7 @@ public class SearchRouteFragment extends Fragment {
 
                 if (etFrom.getText().toString().equals("") || etTo.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("Error Date")) {
 
-                    Snackbar.make(getView(),"Error location or date!",Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getView(), "Error location or date!", Snackbar.LENGTH_LONG).show();
 
                 } else {
                     routeList = new ArrayList<>();
@@ -136,10 +136,10 @@ public class SearchRouteFragment extends Fragment {
 
                             }
                             if (routeList.size() == 0) {
-                                Snackbar.make(getView(),"Empty route list",Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(getView(), "Empty route list", Snackbar.LENGTH_LONG).show();
                             }
 
-                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList,SearchRouteFragment.this, getContext());
+                            RoutesAdapter routesAdapter = new RoutesAdapter(routeList, SearchRouteFragment.this, getContext());
                             recList.setAdapter(routesAdapter);
 
 
@@ -156,7 +156,6 @@ public class SearchRouteFragment extends Fragment {
     }
 
     private void setDateTimeField() {
-        //fromDateEtxt.setOnClickListener((View.OnClickListener) getActivity());
 
         Calendar newCalendar = Calendar.getInstance();
         fromDatePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -164,8 +163,14 @@ public class SearchRouteFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
-                if (year < minYear || monthOfYear < minMonth || dayOfMonth < minDay) {
-                    fromDateEtxt.setText("Error Date");
+                if (monthOfYear < minMonth || dayOfMonth < minDay) {
+                    if (year <= minYear) {
+                        fromDateEtxt.setText("Error Date");
+                    } else {
+                        if (year > minYear) {
+                            fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
+                        }
+                    }
                 } else {
                     fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
                 }

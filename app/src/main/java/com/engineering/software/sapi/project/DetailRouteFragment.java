@@ -45,7 +45,10 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -105,6 +108,7 @@ public class DetailRouteFragment extends Fragment {
     private Bundle arg;
 
     boolean mSubscribed;
+    boolean mIsFreeSeat;
 
 
     public DetailRouteFragment() {
@@ -167,34 +171,59 @@ public class DetailRouteFragment extends Fragment {
         /*
          * Verify if the user already subscribed
          */
-        verifySubscription(currentUser);
+        mSubscribed = verifySubscription(currentUser);
+        if (mSubscribed) {
+            Log.d("SUBSCRIBE", "Already subscribed");
+            disableSubscription(fabSubscribe);
+        }
+
+        mIsFreeSeat = isFreeSeat();
+        if (!mIsFreeSeat) {
+            Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+            disableSubscription(fabSubscribe);
+        }
 
         fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("SUBSCRIBE", "fab clicked");
 
-                Integer numberOfPassenger = route.getInt("numberOfPassanger");
-
-                Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
-
-                mSubscribed = verifySubscription(currentUser);
-
-                if (passengers.size() < numberOfPassenger &&
-                        !mSubscribed) {
-                    addSubscriber();
+                if (mIsFreeSeat) {
+                    if (!mSubscribed) {
+                        addSubscriber();
+                        disableSubscription(fabSubscribe);
+                        mSubscribed = true;
+                    } else {
+                        Snackbar.make(
+                                coordinatorLayout,
+                                "You're already subscribed",
+                                Snackbar.LENGTH_LONG)
+                                .setAction("UNSUBSCRIBE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        unsubscribe();
+                                        mSubscribed = false;
+                                    }
+                                })
+                                .show();
+                    }
                 } else {
                     Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
-                    disableSubscription(fabSubscribe);
                     Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
                 }
 
 
             }
         });
-
-
         return view;
+    }
+
+    private boolean isFreeSeat() {
+        Integer numberOfPassenger = route.getInt("numberOfPassanger");
+
+        Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
+
+        return passengers.size() < numberOfPassenger;
     }
 
     private boolean verifySubscription(ParseUser currentUser) {
@@ -214,27 +243,46 @@ public class DetailRouteFragment extends Fragment {
                 }
             }
         }
-        if (mSubscribed) {
-            Log.d("SUBSCRIBE", "Already subscribed");
-
-            disableSubscription(fabSubscribe);
-            Snackbar.make(
-                    coordinatorLayout,
-                    "You're already subscribed",
-                    Snackbar.LENGTH_LONG)
-                    .show();
-        }
         return mSubscribed;
     }
 
     /*
-     * Disable subscribtion
+     * Disable subscription
      * Set color of the floating action button to red
      */
     private void disableSubscription(FloatingActionButton fabSubscribe) {
         fabSubscribe.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.red)));
     }
 
+    /*
+     * Enable subscription
+     * Set color of the floating action button to default value (accent)
+     */
+    private void enableSubscription(FloatingActionButton fabSubscribe) {
+        fabSubscribe.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.accent)));
+    }
+
+    /*
+     * Unsubscribe from route
+     */
+    private void unsubscribe() {
+        img = getProfileImage(currentUser);
+
+        for (Pair<ParseUser, Bitmap> user : passengers) {
+            if (user.first == currentUser) {
+                passengers.remove(user);
+            }
+        }
+        adapter.notifyDataSetChanged();
+
+        route.removeAll("passengers", Collections.singleton(currentUser.getObjectId()));
+        route.saveInBackground();
+
+        currentUser.removeAll("subscribed", Collections.singleton(routeObjectId));
+        currentUser.saveInBackground();
+
+        enableSubscription(fabSubscribe);
+    }
 
     /*
      * Add subscriber
@@ -257,6 +305,7 @@ public class DetailRouteFragment extends Fragment {
 
             passengers.add(Pair.create(currentUser, img));
             adapter.notifyDataSetChanged();
+            textViewPassengersList.setText(R.string.passengers);
 
             route.add("passengers", currentUser.getObjectId());
             route.saveInBackground();
@@ -394,7 +443,7 @@ public class DetailRouteFragment extends Fragment {
 
             getData();
 
-            img = getProfileImage(currentUser);
+            img = getProfileImage(routeOwner);
             imageViewProfileImage.setImageBitmap(img);
 
             buttonCall.setOnClickListener(new View.OnClickListener() {

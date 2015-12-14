@@ -32,11 +32,11 @@ public class PassengersAdapter extends RecyclerView.Adapter<PassengersAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.card_view_passenger);
-            buttonViewProfile = (Button) itemView.findViewById(R.id.button_view_profile);
-            passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);
+/*            buttonViewProfile = (Button) itemView.findViewById(R.id.button_view_profile);
+            passengerName = (TextView) itemView.findViewById(R.id.text_view_passenger_name);*/
             imageViewProfileImage = (ImageView) itemView.findViewById(R.id.card_view_profile_image);
 
-            buttonViewProfile.setOnClickListener(new View.OnClickListener() {
+            imageViewProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (parentFragment != null) {
@@ -79,7 +79,7 @@ public class PassengersAdapter extends RecyclerView.Adapter<PassengersAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.userObjectID = passengers.get(position).first.getObjectId();
-        holder.passengerName.setText(passengers.get(position).first.get("name").toString());
+        /*holder.passengerName.setText(passengers.get(position).first.get("name").toString());*/
         holder.imageViewProfileImage.setImageBitmap(passengers.get(position).second);
     }
 

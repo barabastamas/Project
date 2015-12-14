@@ -15,7 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -36,18 +35,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -77,7 +72,6 @@ public class DetailRouteFragment extends Fragment {
     private TextView textViewDestination;
     private TextView textViewDate;
     private TextView textViewPrice;
-    private TextView textViewPassengersList;
     private ImageView imageViewProfileImage;
 
     private Button buttonCall;
@@ -89,26 +83,20 @@ public class DetailRouteFragment extends Fragment {
 
     private List<Pair<ParseUser, Bitmap>> passengers;
 
-    private String ownerName;
     private String routeObjectId;
     private String starting;
     private String destination;
-    private String date;
-    private String price;
 
     private ArrayList<LatLng> coordinatesStarting;
     private ArrayList<LatLng> coordinatesDestination;
     private LatLng latLngStarting;
     private LatLng latLngDestination;
-    private MarkerOptions markerOptionStarting;
-    private MarkerOptions markerOptionDestination;
     private Marker markerStart;
     private Marker markerDestination;
 
-    private Bundle arg;
-
     boolean mSubscribed;
     boolean mIsFreeSeat;
+    boolean mIsRouteOwner;
 
 
     public DetailRouteFragment() {
@@ -131,7 +119,7 @@ public class DetailRouteFragment extends Fragment {
         /*
          * Get data from caller fragment ( SearchRoutes )
          */
-        arg = getArguments();
+        Bundle arg = getArguments();
 
         if (arg != null) {
             routeObjectId = getArguments().getString("Object_ID");
@@ -169,6 +157,15 @@ public class DetailRouteFragment extends Fragment {
         setupMap();
 
         /*
+         * Verify route owner
+         */
+        mIsRouteOwner = isOwner(currentUser);
+        if (mIsRouteOwner) {
+            Log.d("SUBSCRIBE", "Can't subscribe to own route");
+            disableSubscription(fabSubscribe);
+        }
+
+        /*
          * Verify if the user already subscribed
          */
         mSubscribed = verifySubscription(currentUser);
@@ -177,6 +174,9 @@ public class DetailRouteFragment extends Fragment {
             disableSubscription(fabSubscribe);
         }
 
+        /*
+         * Verify if there is room to subscribe
+         */
         mIsFreeSeat = isFreeSeat();
         if (!mIsFreeSeat) {
             Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
@@ -188,36 +188,53 @@ public class DetailRouteFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("SUBSCRIBE", "fab clicked");
 
-                if (mIsFreeSeat) {
-                    if (!mSubscribed) {
-                        addSubscriber();
-                        disableSubscription(fabSubscribe);
-                        mSubscribed = true;
-                    } else {
-                        Snackbar.make(
-                                coordinatorLayout,
-                                "You're already subscribed",
-                                Snackbar.LENGTH_LONG)
-                                .setAction("UNSUBSCRIBE", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        unsubscribe();
-                                        mSubscribed = false;
-                                    }
-                                })
-                                .show();
-                    }
+                if (mIsRouteOwner) {
+                    Snackbar.make(
+                            coordinatorLayout,
+                            "Can't subscribe to own route",
+                            Snackbar.LENGTH_LONG)
+                            .show();
                 } else {
-                    Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
-                    Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
+                    if (mIsFreeSeat) {
+                        if (!mSubscribed) {
+                            addSubscriber();
+                            disableSubscription(fabSubscribe);
+                            mSubscribed = true;
+                        } else {
+                            Snackbar.make(
+                                    coordinatorLayout,
+                                    "You're already subscribed",
+                                    Snackbar.LENGTH_LONG)
+                                    .setAction("UNSUBSCRIBE", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            unsubscribe();
+                                            mSubscribed = false;
+                                        }
+                                    })
+                                    .show();
+                        }
+                    } else {
+                        Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+                        Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
+                    }
+
                 }
-
-
             }
         });
         return view;
     }
 
+    /*
+     * Verify if the current user is the owner of the route or not
+     */
+    private boolean isOwner(ParseUser user) {
+        return route.get("routeOwner").equals(user.getObjectId());
+    }
+
+    /*
+     * Verify if there is free seat for the user to subscribe
+     */
     private boolean isFreeSeat() {
         Integer numberOfPassenger = route.getInt("numberOfPassanger");
 
@@ -225,6 +242,10 @@ public class DetailRouteFragment extends Fragment {
 
         return passengers.size() < numberOfPassenger;
     }
+
+    /*
+     * Verify if the user is already subscribed
+     */
 
     private boolean verifySubscription(ParseUser currentUser) {
         /*// subscribedRoutes contains objectIDs of subscribed routes
@@ -293,7 +314,7 @@ public class DetailRouteFragment extends Fragment {
         if (routeOwner.getObjectId().equals(currentUser.getObjectId())) {
             Snackbar.make(
                     coordinatorLayout,
-                    "Don't be silly. You're the owner",
+                    "Can't subscribe to own route",
                     Snackbar.LENGTH_LONG)
                     .show();
         } else {
@@ -305,7 +326,6 @@ public class DetailRouteFragment extends Fragment {
 
             passengers.add(Pair.create(currentUser, img));
             adapter.notifyDataSetChanged();
-            textViewPassengersList.setText(R.string.passengers);
 
             route.add("passengers", currentUser.getObjectId());
             route.saveInBackground();
@@ -320,10 +340,11 @@ public class DetailRouteFragment extends Fragment {
      */
     private void setupRecycleView() {
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        /*LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);*/
+
 
         getRoutePassengers();
     }
@@ -356,7 +377,6 @@ public class DetailRouteFragment extends Fragment {
                         if (obj.getObjectId().equals(routeObjectId)) {
                             List<String> list = obj.getList("passengers");
                             if (list != null) {
-                                textViewPassengersList.setText(R.string.passengers);
                                 for (String s : list) {
                                     Log.d("PASSENGERS", s);
 
@@ -369,7 +389,6 @@ public class DetailRouteFragment extends Fragment {
                                     passengers.add(Pair.create(user, img));
                                 }
                             } else {
-                                textViewPassengersList.setText(R.string.no_passengers);
                             }
                         }
                     }
@@ -379,6 +398,16 @@ public class DetailRouteFragment extends Fragment {
                     e.printStackTrace();
                 }
                 if (passengers != null) {
+
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                            getContext(),
+                            1,
+                            GridLayoutManager.HORIZONTAL,
+                            false);
+                    gridLayoutManager.canScrollVertically();
+
+                    recyclerView.setLayoutManager(gridLayoutManager);
+
                     adapter = new PassengersAdapter(
                             getContext(),
                             passengers,
@@ -495,7 +524,6 @@ public class DetailRouteFragment extends Fragment {
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
         textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
         imageViewProfileImage = (ImageView) view.findViewById(R.id.detail_route_profile_image);
-        textViewPassengersList = (TextView) view.findViewById(R.id.text_view_passengers_list);
 
         buttonCall = (Button) view.findViewById(R.id.button_call);
         buttonSendEmail = (Button) view.findViewById(R.id.button_send_email);
@@ -572,7 +600,7 @@ public class DetailRouteFragment extends Fragment {
         if (markerStart != null) {
             markerStart.remove();
         }
-        markerOptionStarting = new MarkerOptions().position(start).title(starting);
+        MarkerOptions markerOptionStarting = new MarkerOptions().position(start).title(starting);
         markerStart = map.addMarker(markerOptionStarting);
     }
 
@@ -580,7 +608,7 @@ public class DetailRouteFragment extends Fragment {
         if (markerDestination != null) {
             markerDestination.remove();
         }
-        markerOptionDestination = new MarkerOptions().position(dest).title(destination);
+        MarkerOptions markerOptionDestination = new MarkerOptions().position(dest).title(destination);
         markerDestination = map.addMarker(markerOptionDestination);
     }
 

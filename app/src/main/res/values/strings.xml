@@ -47,6 +47,9 @@
     <string name="facebook_app_id">1656238304659370</string>
     <string name="maxp">Max person</string>
     <string name="addr">add</string>
+    <string name="email_address">E-mail address</string>
+    <string name="email_subject">Subject</string>
+    <string name="email_text">Text</string>
 
     <string-array name="city_array">
         <item>Bucharest</item>

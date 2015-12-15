@@ -2,6 +2,7 @@ package com.engineering.software.sapi.project;
 
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -12,19 +13,21 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -34,16 +37,15 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -72,11 +74,10 @@ public class DetailRouteFragment extends Fragment {
     private TextView textViewDestination;
     private TextView textViewDate;
     private TextView textViewPrice;
-    private TextView textViewPassengersList;
     private ImageView imageViewProfileImage;
 
-    private Button buttonCall;
-    private Button buttonSendEmail;
+    private ImageButton buttonCall;
+    private ImageButton buttonSendEmail;
 
     private ParseUser routeOwner;
     private ParseObject route;
@@ -84,23 +85,20 @@ public class DetailRouteFragment extends Fragment {
 
     private List<Pair<ParseUser, Bitmap>> passengers;
 
-    private String ownerName;
     private String routeObjectId;
     private String starting;
     private String destination;
-    private String date;
-    private String price;
 
     private ArrayList<LatLng> coordinatesStarting;
     private ArrayList<LatLng> coordinatesDestination;
     private LatLng latLngStarting;
     private LatLng latLngDestination;
-    private MarkerOptions markerOptionStarting;
-    private MarkerOptions markerOptionDestination;
     private Marker markerStart;
     private Marker markerDestination;
 
-    private Bundle arg;
+    boolean mSubscribed;
+    boolean mIsFreeSeat;
+    boolean mIsRouteOwner;
 
 
     public DetailRouteFragment() {
@@ -118,12 +116,12 @@ public class DetailRouteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_detail_route, container, false);
+        final View view = inflater.inflate(R.layout.fragment_detail_route, container, false);
 
         /*
          * Get data from caller fragment ( SearchRoutes )
          */
-        arg = getArguments();
+        Bundle arg = getArguments();
 
         if (arg != null) {
             routeObjectId = getArguments().getString("Object_ID");
@@ -160,61 +158,165 @@ public class DetailRouteFragment extends Fragment {
          */
         setupMap();
 
+        /*
+         * Verify route owner
+         */
+        mIsRouteOwner = isOwner(currentUser);
+        if (mIsRouteOwner) {
+            Log.d("SUBSCRIBE", "Can't subscribe to own route");
+            disableSubscription(fabSubscribe);
+        }
+
+        /*
+         * Verify if the user already subscribed
+         */
+        mSubscribed = verifySubscription(currentUser);
+        if (mSubscribed) {
+            Log.d("SUBSCRIBE", "Already subscribed");
+            disableSubscription(fabSubscribe);
+        }
+
+        /*
+         * Verify if there is room to subscribe
+         */
+        mIsFreeSeat = isFreeSeat();
+        if (!mIsFreeSeat) {
+            Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+            disableSubscription(fabSubscribe);
+        }
+
         fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("SUBSCRIBE", "fab clicked");
 
-                Integer numberOfPassenger = route.getInt("numberOfPassanger");
-
-                Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
-
-                if (passengers.size() < numberOfPassenger) {
-
-                    // subscribedRoutes contains objectIDs of subscribed routes
-                    List<String> subscribedRoutes = currentUser.getList("subscribed");
-                    // subscribedPassengers contains objectIDs of passengers who have subscribed
-                    List<String> subscribedPassengers = route.getList("passengers");
-
-                    boolean mSubscribed = false;
-
-                    if (subscribedPassengers != null) {
-                        for (String subscriber : subscribedPassengers) {
-                            if (subscriber.equals(currentUser.getObjectId())) {
-                                mSubscribed = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (mSubscribed) {
-                        Log.d("SUBSCRIBE", "Already subscribed");
-
-                        Snackbar.make(
-                                coordinatorLayout,
-                                "You already subscribed",
-                                Snackbar.LENGTH_LONG)
-                                .show();
-                    } else {
-                        addSubscriber();
-                    }
+                if (mIsRouteOwner) {
+                    Snackbar.make(
+                            coordinatorLayout,
+                            "Can't subscribe to own route",
+                            Snackbar.LENGTH_LONG)
+                            .show();
                 } else {
-                    Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
-                    Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
+                    if (mIsFreeSeat) {
+                        if (!mSubscribed) {
+                            addSubscriber();
+                            disableSubscription(fabSubscribe);
+                            mSubscribed = true;
+                        } else {
+                            Snackbar.make(
+                                    coordinatorLayout,
+                                    "You're already subscribed",
+                                    Snackbar.LENGTH_LONG)
+                                    .setAction("UNSUBSCRIBE", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            unsubscribe();
+                                            mSubscribed = false;
+                                        }
+                                    })
+                                    .show();
+                        }
+                    } else {
+                        Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+                        Snackbar.make(coordinatorLayout, "Maximum numbers of passengers reached", Snackbar.LENGTH_LONG).show();
+                    }
+
                 }
-
-
             }
         });
-
-
         return view;
     }
 
+    /*
+     * Verify if the current user is the owner of the route or not
+     */
+    private boolean isOwner(ParseUser user) {
+        return route.get("routeOwner").equals(user.getObjectId());
+    }
+
+    /*
+     * Verify if there is free seat for the user to subscribe
+     */
+    private boolean isFreeSeat() {
+        Integer numberOfPassenger = route.getInt("numberOfPassanger");
+
+        Log.d("SUBSCRIBE", passengers.size() + " " + numberOfPassenger);
+
+        return passengers.size() < numberOfPassenger;
+    }
+
+    /*
+     * Verify if the user is already subscribed
+     */
+
+    private boolean verifySubscription(ParseUser currentUser) {
+        /*// subscribedRoutes contains objectIDs of subscribed routes
+        List<String> subscribedRoutes = currentUser.getList("subscribed");*/
+
+        // subscribedPassengers contains objectIDs of passengers who have subscribed
+        List<String> subscribedPassengers = route.getList("passengers");
+
+        mSubscribed = false;
+
+        if (subscribedPassengers != null) {
+            for (String subscriber : subscribedPassengers) {
+                if (subscriber.equals(currentUser.getObjectId())) {
+                    mSubscribed = true;
+                    break;
+                }
+            }
+        }
+        return mSubscribed;
+    }
+
+    /*
+     * Disable subscription
+     * Set color of the floating action button to red
+     */
+    private void disableSubscription(FloatingActionButton fabSubscribe) {
+        fabSubscribe.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.red)));
+    }
+
+    /*
+     * Enable subscription
+     * Set color of the floating action button to default value (accent)
+     */
+    private void enableSubscription(FloatingActionButton fabSubscribe) {
+        fabSubscribe.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.accent)));
+    }
+
+    /*
+     * Unsubscribe from route
+     */
+    private void unsubscribe() {
+        img = getProfileImage(currentUser);
+
+        for (Pair<ParseUser, Bitmap> user : passengers) {
+            if (user.first == currentUser) {
+                passengers.remove(user);
+            }
+        }
+        adapter.notifyDataSetChanged();
+
+        route.removeAll("passengers", Collections.singleton(currentUser.getObjectId()));
+        route.saveInBackground();
+
+        currentUser.removeAll("subscribed", Collections.singleton(routeObjectId));
+        currentUser.saveInBackground();
+
+        enableSubscription(fabSubscribe);
+    }
+
+    /*
+     * Add subscriber
+     * User object id to routes
+     * Route object id to user
+     */
     private void addSubscriber() {
         if (routeOwner.getObjectId().equals(currentUser.getObjectId())) {
             Snackbar.make(
                     coordinatorLayout,
-                    "Don't be silly. You're the owner",
+                    "Can't subscribe to own route",
                     Snackbar.LENGTH_LONG)
                     .show();
         } else {
@@ -231,7 +333,6 @@ public class DetailRouteFragment extends Fragment {
             route.saveInBackground();
             currentUser.add("subscribed", routeObjectId);
             currentUser.saveInBackground();
-            /*setupRecycleView();*/
         }
     }
 
@@ -241,10 +342,11 @@ public class DetailRouteFragment extends Fragment {
      */
     private void setupRecycleView() {
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        /*LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);*/
+
 
         getRoutePassengers();
     }
@@ -277,7 +379,6 @@ public class DetailRouteFragment extends Fragment {
                         if (obj.getObjectId().equals(routeObjectId)) {
                             List<String> list = obj.getList("passengers");
                             if (list != null) {
-                                textViewPassengersList.setText(R.string.passengers);
                                 for (String s : list) {
                                     Log.d("PASSENGERS", s);
 
@@ -289,8 +390,6 @@ public class DetailRouteFragment extends Fragment {
 
                                     passengers.add(Pair.create(user, img));
                                 }
-                            } else {
-                                textViewPassengersList.setText(R.string.no_passengers);
                             }
                         }
                     }
@@ -300,6 +399,16 @@ public class DetailRouteFragment extends Fragment {
                     e.printStackTrace();
                 }
                 if (passengers != null) {
+
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                            getContext(),
+                            1,
+                            GridLayoutManager.HORIZONTAL,
+                            false);
+                    gridLayoutManager.canScrollVertically();
+
+                    recyclerView.setLayoutManager(gridLayoutManager);
+
                     adapter = new PassengersAdapter(
                             getContext(),
                             passengers,
@@ -364,7 +473,7 @@ public class DetailRouteFragment extends Fragment {
 
             getData();
 
-            img = getProfileImage(currentUser);
+            img = getProfileImage(routeOwner);
             imageViewProfileImage.setImageBitmap(img);
 
             buttonCall.setOnClickListener(new View.OnClickListener() {
@@ -376,21 +485,15 @@ public class DetailRouteFragment extends Fragment {
                 }
             });
 
+
             buttonSendEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
-                    intentSendEmail.setType("message/rfc822");
-                    intentSendEmail.putExtra(Intent.EXTRA_EMAIL, new String[]{"tamas_27@yahoo.co.uk"});
-                    try {
-                        startActivity(Intent.createChooser(intentSendEmail, "Send email with..."));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(
-                                getContext(),
-                                "There are no email clients installed.",
-                                Toast.LENGTH_SHORT)
-                                .show();
-                    }
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction.hide(DetailRouteFragment.this);
+                    fragmentTransaction.add(R.id.content, new SendEmailFragment());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
             });
         } catch (ParseException e) {
@@ -416,10 +519,9 @@ public class DetailRouteFragment extends Fragment {
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
         textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
         imageViewProfileImage = (ImageView) view.findViewById(R.id.detail_route_profile_image);
-        textViewPassengersList = (TextView) view.findViewById(R.id.text_view_passengers_list);
 
-        buttonCall = (Button) view.findViewById(R.id.button_call);
-        buttonSendEmail = (Button) view.findViewById(R.id.button_send_email);
+        buttonCall = (ImageButton) view.findViewById(R.id.button_call);
+        buttonSendEmail = (ImageButton) view.findViewById(R.id.button_send_email);
     }
 
     private void getData() {
@@ -493,7 +595,7 @@ public class DetailRouteFragment extends Fragment {
         if (markerStart != null) {
             markerStart.remove();
         }
-        markerOptionStarting = new MarkerOptions().position(start).title(starting);
+        MarkerOptions markerOptionStarting = new MarkerOptions().position(start).title(starting);
         markerStart = map.addMarker(markerOptionStarting);
     }
 
@@ -501,7 +603,7 @@ public class DetailRouteFragment extends Fragment {
         if (markerDestination != null) {
             markerDestination.remove();
         }
-        markerOptionDestination = new MarkerOptions().position(dest).title(destination);
+        MarkerOptions markerOptionDestination = new MarkerOptions().position(dest).title(destination);
         markerDestination = map.addMarker(markerOptionDestination);
     }
 

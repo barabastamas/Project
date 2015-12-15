@@ -60,7 +60,7 @@
                         android:textSize="20sp" />
                 </LinearLayout>
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_call"
                     style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
@@ -69,11 +69,10 @@
                     android:gravity="center"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text="@string/call"
+                    android:src="@drawable/ic_phone"
                     android:textColor="@color/accent" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_send_email"
                     style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
@@ -82,8 +81,7 @@
                     android:gravity="center"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text="@string/send_email"
+                    android:src="@drawable/ic_email"
                     android:textColor="@color/accent" />
 
             </LinearLayout>
@@ -221,22 +219,18 @@
                     android:textSize="20sp" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_view_passengers_list"
+            <!-- Divider -->
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:text="@string/passengers" />
+                android:layout_height="1dp"
+                android:background="@color/divider" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycle_view_passenger"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp" />
+                android:layout_height="100dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
 
         </LinearLayout>
 

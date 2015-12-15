@@ -29,7 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -59,20 +58,15 @@ public class EditRouteFragment extends Fragment {
     // Saved Instance State
     private Bundle bundle;
 
-    private TextView textViewPassengers;
     private FloatingActionButton fabEdit;
 
     private EditText editTextFrom;
     private EditText editTextDestination;
     private EditText editTextPrice;
     private TextView textViewDate;
-    private TextView textViewPassengersList;
 
-    private String routeObjectId;
     private String starting;
     private String destination;
-    private String date;
-    private String price;
     private Bitmap img;
 
     private SimpleDateFormat dateFormat;
@@ -200,7 +194,6 @@ public class EditRouteFragment extends Fragment {
 
                     // Set map and recycler view visible
                     mapView.setVisibility(View.VISIBLE);
-                    textViewPassengers.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.VISIBLE);
                 } else {
                     // edit enabled
@@ -220,7 +213,6 @@ public class EditRouteFragment extends Fragment {
 
                     // set map and recycler view visibility gone
                     mapView.setVisibility(View.GONE);
-                    textViewPassengers.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.GONE);
                 }
             }
@@ -414,7 +406,6 @@ public class EditRouteFragment extends Fragment {
         editTextDestination = (EditText) view.findViewById(R.id.edit_text_destination);
         editTextPrice = (EditText) view.findViewById(R.id.edit_text_price);
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
-        textViewPassengersList = (TextView) view.findViewById(R.id.text_view_passengers_list);
 
 
         makeAllEditTextNotEditable();
@@ -423,8 +414,6 @@ public class EditRouteFragment extends Fragment {
     private void getData() {
         starting = editTextFrom.getText().toString();
         destination = editTextDestination.getText().toString();
-        price = editTextPrice.getText().toString();
-        date = textViewDate.getText().toString();
     }
 
     /*
@@ -489,7 +478,6 @@ public class EditRouteFragment extends Fragment {
 
             List<String> list = route.getList("passengers");
             if (list != null) {
-                textViewPassengersList.setText(R.string.passengers);
                 for (String s : list) {
                     Log.d("PASSENGERS", s);
 
@@ -525,7 +513,6 @@ public class EditRouteFragment extends Fragment {
                     passengers.add(Pair.create(user, img));
                 }
             } else {
-                textViewPassengersList.setText(R.string.no_passengers);
             }
 
             if (passengers != null) {

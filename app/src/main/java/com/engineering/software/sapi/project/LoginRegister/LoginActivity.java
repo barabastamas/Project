@@ -4,13 +4,15 @@ import android.app.Activity;
 
 
 import android.app.Dialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,15 +27,18 @@ import android.widget.Toast;
 
 import com.engineering.software.sapi.project.MainActivity;
 import com.engineering.software.sapi.project.R;
+import com.facebook.login.widget.LoginButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,11 +48,13 @@ public class LoginActivity extends Activity {
     EditText etUserName, etPassword;
     TextView tvForgPass, tvSignUp;
     CheckBox saveLoginCheckBox;
+    private LoginButton fbButton;
 
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
+    private TextInputLayout inputLayoutUser,inputLayoutPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,9 @@ public class LoginActivity extends Activity {
         tvForgPass = (TextView) findViewById(R.id.tvForgotPass);
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
         saveLoginCheckBox = (CheckBox) findViewById(R.id.cbRememberMe);
+        fbButton = (LoginButton) findViewById(R.id.fbButton);
+        inputLayoutUser = (TextInputLayout) findViewById(R.id.input_layout_username);
+        inputLayoutPass = (TextInputLayout) findViewById(R.id.input_layout_password);
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -104,12 +114,49 @@ public class LoginActivity extends Activity {
             }
         });
 
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbSignUp();
+            }
+
+        });
+
     }
 
 
     private void registrate(View v) {
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
+    }
+
+    private void fbSignUp(){
+        List<String> permissions = Arrays.asList("public_profile");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (user == null) {
+                    Toast.makeText(LoginActivity.this, "The user cancelled the Facebook login.", Toast.LENGTH_LONG).show();
+
+                } else if (user.isNew()) {
+                    Toast.makeText(LoginActivity.this, "The user signed up and logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showMainActivity();
+                } else {
+                    Toast.makeText(LoginActivity.this, "The user logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showMainActivity();
+                }
+            }
+        });
+    }
+
+    private void showMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void forgotPass(View v) {
@@ -213,6 +260,11 @@ public class LoginActivity extends Activity {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    }
 
 }
 

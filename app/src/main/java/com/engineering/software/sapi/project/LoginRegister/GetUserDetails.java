@@ -74,11 +74,5 @@ public class GetUserDetails {
         request.executeAsync();
     }
 
-
-    public void logout() {
-        // Log the user out
-        ParseUser.logOut();
-    }
-
 }
 

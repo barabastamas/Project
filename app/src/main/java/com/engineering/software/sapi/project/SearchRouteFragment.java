@@ -48,13 +48,12 @@ public class SearchRouteFragment extends Fragment {
     private ArrayAdapter<String> adapter;
 
     private DatePickerDialog fromDatePickerDialog;
-    private DatePickerDialog toDatePickerDialog;
-
     private SimpleDateFormat dateFormatter;
 
     private int minYear;
     private int minMonth;
     private int minDay;
+
     private List<ParseObject> routeList;
 
     public SearchRouteFragment() {

@@ -35,6 +35,7 @@ import com.parse.ParseQuery;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,7 +68,7 @@ public class SearchRouteFragment extends Fragment {
         // Inflate the layout for this fragment
 
         final View view = inflater.inflate(R.layout.fragment_search_route, container, false);
-
+        //automatikus kitoltes
         final AutoCompleteTextView etFrom = (AutoCompleteTextView) view.findViewById(R.id.fromid);
         countries = getResources().getStringArray(R.array.city_array);
         adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, countries);
@@ -96,11 +97,12 @@ public class SearchRouteFragment extends Fragment {
         minDay = c.get(Calendar.DAY_OF_MONTH);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-
+        //datum bealittasa es ellenorzese
         setDateTimeField();
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //billentyuzet elrejtese
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
@@ -113,12 +115,13 @@ public class SearchRouteFragment extends Fragment {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(searchButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-
+                //ellenorzesek
                 if (etFrom.getText().toString().equals("") || etTo.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("") || fromDateEtxt.getText().toString().equals("Error Date")) {
 
                     Snackbar.make(getView(), "Error location or date!", Snackbar.LENGTH_LONG).show();
 
                 } else {
+                    //adatok lekerese es listaba helyezese
                     routeList = new ArrayList<>();
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
 
@@ -130,14 +133,11 @@ public class SearchRouteFragment extends Fragment {
                                 if (obj.get("destination").toString().equals(etTo.getText().toString()) && obj.get("date").toString().equals(fromDateEtxt.getText().toString())) {
                                     Log.d("too", obj.get("destination").toString());
                                     routeList.add(obj);
-
                                 }
-
                             }
                             if (routeList.size() == 0) {
                                 Snackbar.make(getView(), "Empty route list", Snackbar.LENGTH_LONG).show();
                             }
-
                             RoutesAdapter routesAdapter = new RoutesAdapter(routeList, SearchRouteFragment.this, getContext());
                             recList.setAdapter(routesAdapter);
 

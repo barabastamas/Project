@@ -57,7 +57,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.ViewHolder
             rNumbOfPass = (TextView) itemView.findViewById(R.id.txtNumb);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
 
-
+            //lista elemeinek kivalasztasa, object id atkuldese
             cardView.setOnClickListener(new View.OnClickListener() {
 
 

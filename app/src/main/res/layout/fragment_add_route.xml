@@ -14,12 +14,25 @@
         android:orientation="vertical"
         android:paddingTop="50dp">
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
+
         <AutoCompleteTextView
             android:id="@+id/from"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/from"
             android:inputType="text" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
 
         <AutoCompleteTextView
             android:id="@+id/to"
@@ -27,6 +40,13 @@
             android:layout_height="wrap_content"
             android:hint="@string/to"
             android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/date"
@@ -35,20 +55,38 @@
             android:hint="@string/date"
             android:inputType="text"
             android:textSize="20dp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
 
         <EditText
             android:id="@+id/price"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/price"
-            android:inputType="number" />
+            android:inputType="number"
+            android:singleLine="true" />
+        </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_max"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
 
         <EditText
             android:id="@+id/max"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/maxp"
-            android:inputType="number" />
+            android:inputType="number"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
 
 
     </LinearLayout>

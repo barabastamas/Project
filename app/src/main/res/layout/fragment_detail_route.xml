@@ -60,7 +60,7 @@
                         android:textSize="20sp" />
                 </LinearLayout>
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_call"
                     style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
@@ -69,11 +69,10 @@
                     android:gravity="center"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text="@string/call"
+                    android:src="@drawable/ic_phone"
                     android:textColor="@color/accent" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_send_email"
                     style="?android:borderlessButtonStyle"
                     android:layout_width="match_parent"
@@ -82,8 +81,7 @@
                     android:gravity="center"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text="@string/send_email"
+                    android:src="@drawable/ic_email"
                     android:textColor="@color/accent" />
 
             </LinearLayout>

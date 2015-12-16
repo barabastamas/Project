@@ -9,17 +9,14 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textFieldHolder2"
-            android:paddingTop="50dp">
+        android:layout_height="wrap_content"
+        android:id="@+id/inputHolder"
+        android:paddingTop="50dp"
+        android:paddingBottom="15dp">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_enterUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <EditText
                 android:layout_width="fill_parent"
@@ -28,6 +25,13 @@
                 android:ems="10"
                 android:id="@+id/etEnterUserName"
                 android:hint="Enter your username" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_enterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_enterUserName">
 
             <EditText
                 android:layout_width="fill_parent"
@@ -36,6 +40,13 @@
                 android:ems="10"
                 android:id="@+id/etEnterName"
                 android:hint="Enter your name" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_enterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_enterName">
 
             <EditText
                 android:layout_width="fill_parent"
@@ -44,6 +55,13 @@
                 android:ems="10"
                 android:id="@+id/etEnterEmail"
                 android:hint="Enter your email" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_enterPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_enterEmail">
 
 
             <EditText
@@ -53,19 +71,27 @@
                 android:ems="10"
                 android:id="@+id/etEnterPassword"
                 android:hint="Enter your password" />
+        </android.support.design.widget.TextInputLayout>
+
+       <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_enterPassAgain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_enterPass">
+
 
             <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/etPassAgain"
-                android:hint="Enter your password again"
-                android:singleLine="true"
-                android:imeActionId="@+id/edittext_action_signup"
-                android:imeActionLabel="@string/signup"
-                android:imeOptions="actionUnspecified"/>
-        </LinearLayout>
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:ems="10"
+                        android:id="@+id/etPassAgain"
+                        android:hint="Enter your password again"
+                        android:singleLine="true"
+                        android:imeActionId="@+id/edittext_action_signup"
+                        android:imeActionLabel="@string/signup"
+                        android:imeOptions="actionUnspecified"/>
+        </android.support.design.widget.TextInputLayout>
 
 
         <LinearLayout
@@ -87,26 +113,6 @@
             />
 
     </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/fbButtonHolder"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:gravity="center_vertical|center_horizontal">
-
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/fbButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp" />
-
-        </LinearLayout>
-
 
     </LinearLayout>
 

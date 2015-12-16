@@ -17,21 +17,17 @@ import com.engineering.software.sapi.project.MainActivity;
 import com.facebook.FacebookSdk;
 import com.engineering.software.sapi.project.R;
 
-import com.facebook.login.widget.LoginButton;
-import com.parse.LogInCallback;
+
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-import java.util.Arrays;
-import java.util.List;
 
 
 public class SignUpActivity extends Activity {
 
     private Button bSignUp;
-    private LoginButton fbButton;
     private EditText etEnterName, etEnterPass, etPassAgain, etEnterEmail, etEnterUserName;
 
 
@@ -51,12 +47,11 @@ public class SignUpActivity extends Activity {
         etEnterPass = (EditText) findViewById(R.id.etEnterPassword);
         etPassAgain = (EditText) findViewById(R.id.etPassAgain);
         etEnterEmail = (EditText) findViewById(R.id.etEnterEmail);
-        fbButton = (LoginButton) findViewById(R.id.fbButton);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
         if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
             // Go to the user info activity
-            showUserDetailsActivity();
+            showMainActivity();
         }
 
         etPassAgain.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -78,50 +73,19 @@ public class SignUpActivity extends Activity {
             }
         });
 
-        fbButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fbSignUp();
-            }
-
-        });
     }
 
-    private void fbSignUp(){
-        List<String> permissions = Arrays.asList("public_profile", "email");
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if (user == null) {
-                    Toast.makeText(SignUpActivity.this, "The user cancelled the Facebook login.", Toast.LENGTH_LONG).show();
-
-                } else if (user.isNew()) {
-                    Toast.makeText(SignUpActivity.this, "The user signed up and logged in through Facebook!", Toast.LENGTH_LONG).show();
-                    GetUserDetails getUserDetails = new GetUserDetails();
-                    getUserDetails.makeMeRequest();
-                    showUserDetailsActivity();
-                } else {
-                    Toast.makeText(SignUpActivity.this, "The ser logged in through Facebook!", Toast.LENGTH_LONG).show();
-                    GetUserDetails getUserDetails = new GetUserDetails();
-                    getUserDetails.makeMeRequest();
-                    showUserDetailsActivity();
-                }
-            }
-        });
-    }
-
-    private void showUserDetailsActivity() {
+    private void showMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-
     private void signup() {
-        String username = etEnterUserName.getText().toString().trim();
+        final String username = etEnterUserName.getText().toString().trim();
         String name = etEnterName.getText().toString().trim();
         String email = etEnterEmail.getText().toString().trim();
-        String password = etEnterPass.getText().toString().trim();
+        final String password = etEnterPass.getText().toString().trim();
         String passwordAgain = etPassAgain.getText().toString().trim();
 
         // Validate the sign up data
@@ -202,13 +166,5 @@ public class SignUpActivity extends Activity {
         });
 
     }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-    }
-
 
 }

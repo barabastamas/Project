@@ -14,14 +14,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/layoutHolder">
+        android:id="@+id/layoutHolder"
+        android:paddingTop="40dp">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_username"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textFieldHolder"
-            android:paddingTop="80dp">
+            android:paddingTop="20dp">
 
             <EditText
                 android:layout_width="fill_parent"
@@ -30,6 +30,15 @@
                 android:ems="10"
                 android:id="@+id/etUserName"
                 android:hint="Username" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout_username">
+
 
             <EditText
                 android:layout_width="fill_parent"
@@ -41,7 +50,7 @@
                 android:imeActionId="@+id/edittext_action_login"
                 android:imeActionLabel="@string/login"
                 android:imeOptions="actionUnspecified"/>
-        </LinearLayout>
+        </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -78,6 +87,25 @@
                 android:layout_height="60dp"
                 android:background="@drawable/buttonstyle"
                 />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fbButtonHolder"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:gravity="center_vertical|center_horizontal">
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/fbButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp" />
 
         </LinearLayout>
 

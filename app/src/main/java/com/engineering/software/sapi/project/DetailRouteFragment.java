@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,8 +76,8 @@ public class DetailRouteFragment extends Fragment {
     private TextView textViewPrice;
     private ImageView imageViewProfileImage;
 
-    private Button buttonCall;
-    private Button buttonSendEmail;
+    private ImageButton buttonCall;
+    private ImageButton buttonSendEmail;
 
     private ParseUser routeOwner;
     private ParseObject route;
@@ -388,7 +390,6 @@ public class DetailRouteFragment extends Fragment {
 
                                     passengers.add(Pair.create(user, img));
                                 }
-                            } else {
                             }
                         }
                     }
@@ -484,21 +485,15 @@ public class DetailRouteFragment extends Fragment {
                 }
             });
 
+
             buttonSendEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intentSendEmail = new Intent(Intent.ACTION_SEND);
-                    intentSendEmail.setType("message/rfc822");
-                    intentSendEmail.putExtra(Intent.EXTRA_EMAIL, new String[]{"tamas_27@yahoo.co.uk"});
-                    try {
-                        startActivity(Intent.createChooser(intentSendEmail, "Send email with..."));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(
-                                getContext(),
-                                "There are no email clients installed.",
-                                Toast.LENGTH_SHORT)
-                                .show();
-                    }
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction.hide(DetailRouteFragment.this);
+                    fragmentTransaction.add(R.id.content, new SendEmailFragment());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
             });
         } catch (ParseException e) {
@@ -525,8 +520,8 @@ public class DetailRouteFragment extends Fragment {
         textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
         imageViewProfileImage = (ImageView) view.findViewById(R.id.detail_route_profile_image);
 
-        buttonCall = (Button) view.findViewById(R.id.button_call);
-        buttonSendEmail = (Button) view.findViewById(R.id.button_send_email);
+        buttonCall = (ImageButton) view.findViewById(R.id.button_call);
+        buttonSendEmail = (ImageButton) view.findViewById(R.id.button_send_email);
     }
 
     private void getData() {

@@ -4,13 +4,16 @@ import android.app.Activity;
 
 
 import android.app.Dialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,15 +28,18 @@ import android.widget.Toast;
 
 import com.engineering.software.sapi.project.MainActivity;
 import com.engineering.software.sapi.project.R;
+import com.facebook.login.widget.LoginButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,11 +49,13 @@ public class LoginActivity extends Activity {
     EditText etUserName, etPassword;
     TextView tvForgPass, tvSignUp;
     CheckBox saveLoginCheckBox;
+    private LoginButton fbButton;
 
 
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
+    private TextInputLayout inputLayoutUser,inputLayoutPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,9 @@ public class LoginActivity extends Activity {
         tvForgPass = (TextView) findViewById(R.id.tvForgotPass);
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
         saveLoginCheckBox = (CheckBox) findViewById(R.id.cbRememberMe);
+        fbButton = (LoginButton) findViewById(R.id.fbButton);
+        inputLayoutUser = (TextInputLayout) findViewById(R.id.input_layout_username);
+        inputLayoutPass = (TextInputLayout) findViewById(R.id.input_layout_password);
 
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
@@ -104,6 +115,14 @@ public class LoginActivity extends Activity {
             }
         });
 
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fbSignUp();
+            }
+
+        });
+
     }
 
 
@@ -112,10 +131,39 @@ public class LoginActivity extends Activity {
         startActivity(i);
     }
 
+    private void fbSignUp(){
+        List<String> permissions = Arrays.asList("public_profile");
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (user == null) {
+                    Toast.makeText(LoginActivity.this, "The user cancelled the Facebook login.", Toast.LENGTH_LONG).show();
+
+                } else if (user.isNew()) {
+                    Toast.makeText(LoginActivity.this, "The user signed up and logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showMainActivity();
+                } else {
+                    Toast.makeText(LoginActivity.this, "The user logged in through Facebook!", Toast.LENGTH_LONG).show();
+                    GetUserDetails getUserDetails = new GetUserDetails();
+                    getUserDetails.makeMeRequest();
+                    showMainActivity();
+                }
+            }
+        });
+    }
+
+    private void showMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void forgotPass(View v) {
-        final Dialog dialog = new Dialog(LoginActivity.this);
-        dialog.setContentView(R.layout.forgotpass_dialog);
-        dialog.setTitle("Forgot your password?");
+        final Dialog forgotPassDialog = new Dialog(LoginActivity.this);
+        forgotPassDialog.setContentView(R.layout.forgotpass_dialog);
+        forgotPassDialog.setTitle("Forgot your password?");
 
 
         tvForgPass.setOnClickListener(new OnClickListener() {
@@ -123,23 +171,25 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                EditText enterMail = (EditText) dialog.findViewById(R.id.etEnterAddress);
-                Button sendMail = (Button) dialog.findViewById(R.id.sendButton);
-                final String to = enterMail.getText().toString().trim();
-                dialog.show();
+                final Button sendMail = (Button) forgotPassDialog.findViewById(R.id.sendButton);
+
+                forgotPassDialog.show();
 
                 sendMail.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                         EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
+                        final String to = enterMail.getText().toString();
                         ParseUser.requestPasswordResetInBackground(to,
                                 new RequestPasswordResetCallback() {
                                     @Override
                                     public void done(com.parse.ParseException e) {
                                         if (e == null) {
-                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions.", Toast.LENGTH_LONG).show();
-                                            dialog.dismiss();
+                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions."+to, Toast.LENGTH_LONG).show();
+                                            forgotPassDialog.dismiss();
                                         } else {
-                                            Toast.makeText(LoginActivity.this, "Something went wrong." + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(LoginActivity.this, "Something went wrong." + to, Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
@@ -207,12 +257,20 @@ public class LoginActivity extends Activity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("username", username);
                     finish();
                 }
             }
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    }
 
 }
 

@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.4"
                 android:textSize="15sp"
                 android:text="From:"/>
 
@@ -42,7 +42,7 @@
                 android:gravity="center_vertical"
                 android:textSize="15sp"
                 android:layout_below="@id/title"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 />
         </LinearLayout>
 
@@ -57,7 +57,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.4"
                 android:textSize="15sp"
                 android:text="To:"/>
 
@@ -69,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:textSize="15sp"
                 android:layout_below="@id/txtFrom"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 />
         </LinearLayout>
 
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.4"
                 android:textSize="15sp"
                 android:text="Date:"/>
 
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
 
                 android:textSize="15sp"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
 
                 />
 
@@ -104,11 +104,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="3">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.05"
                 android:textSize="15sp"
                 android:text="Price:"/>
 
@@ -119,8 +120,15 @@
 
                 android:textSize="15sp"
                 android:layout_below="@+id/txtDate"
-                android:layout_weight="0.7"
+                android:layout_weight="1.4"
                 />
+            <TextView
+                android:id="@+id/txtPrice1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.55"
+                android:textSize="15sp"
+                android:text="Lei"/>
 
         </LinearLayout>
 
@@ -134,9 +142,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.3"
+                android:layout_weight="1.4"
                 android:textSize="15sp"
-                android:text="Number of person:"/>
+                android:text="Max person:"/>
 
 
             <TextView
@@ -146,7 +154,7 @@
 
                 android:textSize="15sp"
                 android:layout_below="@id/txtTo"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 />
         </LinearLayout>
 

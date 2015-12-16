@@ -48,11 +48,6 @@ public class SignUpActivity extends Activity {
         etPassAgain = (EditText) findViewById(R.id.etPassAgain);
         etEnterEmail = (EditText) findViewById(R.id.etEnterEmail);
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
-            // Go to the user info activity
-            showMainActivity();
-        }
 
         etPassAgain.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

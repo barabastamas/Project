@@ -47,6 +47,17 @@ public class LoginActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
+            // Go to the user info activity
+            showMainActivity();
+        }
+
+        if (currentUser !=null) {
+            // Go to the user info activity
+            showMainActivity();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -167,14 +178,14 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onClick(View v) {
 
-                         EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
+                        EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
                         final String to = enterMail.getText().toString();
                         ParseUser.requestPasswordResetInBackground(to,
                                 new RequestPasswordResetCallback() {
                                     @Override
                                     public void done(com.parse.ParseException e) {
                                         if (e == null) {
-                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions."+to, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions." + to, Toast.LENGTH_LONG).show();
                                             forgotPassDialog.dismiss();
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Something went wrong." + to, Toast.LENGTH_LONG).show();
@@ -262,8 +273,7 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        moveTaskToBack(true);
     }
 }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 
 import android.app.Dialog;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -160,9 +161,9 @@ public class LoginActivity extends Activity {
     }
 
     private void forgotPass(View v) {
-        final Dialog dialog = new Dialog(LoginActivity.this);
-        dialog.setContentView(R.layout.forgotpass_dialog);
-        dialog.setTitle("Forgot your password?");
+        final Dialog forgotPassDialog = new Dialog(LoginActivity.this);
+        forgotPassDialog.setContentView(R.layout.forgotpass_dialog);
+        forgotPassDialog.setTitle("Forgot your password?");
 
 
         tvForgPass.setOnClickListener(new OnClickListener() {
@@ -170,23 +171,25 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                EditText enterMail = (EditText) dialog.findViewById(R.id.etEnterAddress);
-                Button sendMail = (Button) dialog.findViewById(R.id.sendButton);
-                final String to = enterMail.getText().toString().trim();
-                dialog.show();
+                final Button sendMail = (Button) forgotPassDialog.findViewById(R.id.sendButton);
+
+                forgotPassDialog.show();
 
                 sendMail.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                         EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
+                        final String to = enterMail.getText().toString();
                         ParseUser.requestPasswordResetInBackground(to,
                                 new RequestPasswordResetCallback() {
                                     @Override
                                     public void done(com.parse.ParseException e) {
                                         if (e == null) {
-                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions.", Toast.LENGTH_LONG).show();
-                                            dialog.dismiss();
+                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions."+to, Toast.LENGTH_LONG).show();
+                                            forgotPassDialog.dismiss();
                                         } else {
-                                            Toast.makeText(LoginActivity.this, "Something went wrong." + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(LoginActivity.this, "Something went wrong." + to, Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
@@ -254,6 +257,9 @@ public class LoginActivity extends Activity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("username", username);
                     finish();
                 }
             }

@@ -2,7 +2,9 @@ package com.engineering.software.sapi.project;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,9 @@ public class LogOutFragment extends Fragment {
     private void logout(){
         ParseUser.logOut();
         startActivity(new Intent(getActivity(), LoginActivity.class));
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("username");
         getActivity().finish();
     }
 

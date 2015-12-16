@@ -7,12 +7,14 @@
     android:background="@color/background"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
     card_view:cardBackgroundColor="@color/background">
 
     <com.github.siyamed.shapeimageview.CircularImageView
         android:id="@+id/card_view_profile_image"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center" />
 
     <!--<LinearLayout

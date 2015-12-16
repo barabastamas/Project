@@ -341,7 +341,7 @@ public class DetailRouteFragment extends Fragment {
      * Sets up the recycle view
      */
     private void setupRecycleView() {
-        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setNestedScrollingEnabled(true);
         recyclerView.setHasFixedSize(true);
 
         /*LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

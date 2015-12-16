@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.3"
                 android:gravity="right"
-                android:text="@string/lei"
+                android:text="@string/ron"
                 android:textColor="@color/primary_text"
                 android:textSize="20sp" />
         </LinearLayout>

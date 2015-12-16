@@ -52,11 +52,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".LoginRegister.GetUserDetails"
-            android:label="@string/title_activity_user_details"
-            android:theme="@style/AppTheme" >
-        </activity>
+        <permission
+            android:name="com.pgi.routviewer.permission.MAPS_RECEIVE"
+            android:protectionLevel="signature" />
     </application>
 
 </manifest>

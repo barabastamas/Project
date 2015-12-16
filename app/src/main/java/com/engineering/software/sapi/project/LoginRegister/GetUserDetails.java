@@ -32,6 +32,7 @@ public class GetUserDetails {
                             try {
                                 userProfile.put("facebookId", jsonObject.getLong("id"));
                                 userProfile.put("name", jsonObject.getString("name"));
+                                Log.d("NAME**", userProfile.getString("name"));
 
                                 if (jsonObject.getString("email") != null)
                                     userProfile.put("email", jsonObject.getString("email"));
@@ -43,6 +44,7 @@ public class GetUserDetails {
                                 currentUser.put("email",userProfile.getString("email"));
                                 currentUser.put("username",userProfile.get("name"));
                                 currentUser.saveInBackground();
+                                Log.d("NAME*****",userProfile.getString("name"));
 
                             } catch (JSONException e) {
                                 Log.d("",

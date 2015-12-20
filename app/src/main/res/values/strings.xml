@@ -19,6 +19,7 @@
     <string name="send_email">Send Email</string>
     <string name="call">Call</string>
 
+    <!-- Profile Fragment strings-->
     <string name="err_msg_name">Enter your full name</string>
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_phone">Enter your phone number</string>
@@ -39,6 +40,10 @@
     <string name="passengers">Passengers</string>
     <string name="no_passengers">No passengers yet</string>
     <string name="view_profile">View profile</string>
+
+    <!--Ownroute Fragment strings-->
+    <string name="own_loading">Loading your routes…</string>
+    <string name="routeOwner">routeOwner</string>
 
     <string name="login">Log in</string>
     <string name="signup">Sign up</string>

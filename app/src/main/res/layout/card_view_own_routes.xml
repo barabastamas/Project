@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_own_routes"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/delimiter"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/own_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/delimiter"
+            android:layout_toStartOf="@+id/delimiter"
+            android:textColorHighlight="@color/cardview_dark_background"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:hint="@string/from" />
+
+        <TextView
+            android:id="@+id/own_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/delimiter"
+            android:layout_toRightOf="@+id/delimiter"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:hint="@string/to" />
+
+        <TextView
+            android:id="@+id/own_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/own_from"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/delimiter"
+            android:layout_toStartOf="@+id/delimiter"
+            android:hint="@string/date" />
+
+        <TextView
+            android:id="@+id/own_passengers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/own_from"
+            android:gravity="center"
+            android:layout_toEndOf="@+id/delimiter"
+            android:layout_toRightOf="@+id/delimiter"
+            android:hint="1" />
+
+        <TextView
+            android:id="@+id/text_passengers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/own_from"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/own_passengers"
+            android:layout_toRightOf="@+id/own_passengers"
+            android:text="@string/passengers"
+            android:hint="@string/passengers" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

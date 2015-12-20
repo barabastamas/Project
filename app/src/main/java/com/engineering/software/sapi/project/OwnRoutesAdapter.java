@@ -1,10 +1,15 @@
 package com.engineering.software.sapi.project;
 
-import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.parse.ParseObject;
@@ -14,54 +19,81 @@ import java.util.List;
 /**
  * Created by Zsolt on 2015. 12. 08..
  */
-public class OwnRoutesAdapter extends BaseAdapter {
+public class OwnRoutesAdapter extends RecyclerView.Adapter<OwnRoutesAdapter.ViewHolder> {
 
-    private String objId;
-    private Activity context;
-    private List<ParseObject> list;
+    private List<ParseObject> list = null;
+    private Fragment parentFragment = null;
+    private LayoutInflater layoutInflater;
 
-    public OwnRoutesAdapter(Activity context, List<ParseObject> list) {
-        this.context = context;
+    public OwnRoutesAdapter(List<ParseObject> list, Fragment fragment, Context context) {
         this.list = list;
+        this.parentFragment = fragment;
+        layoutInflater = LayoutInflater.from(context);
     }
 
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_own_routes, parent, false);
+        return new ViewHolder(itemView);
+    }
 
     @Override
-    public int getCount() {
-        if (list == null) {
-            return 0;
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        ParseObject obj = list.get(position);
+        holder.objectId = obj.get("routeOwner").toString();
+        holder.from.setText(obj.get("from").toString());
+        holder.dest.setText(obj.get("destination").toString());
+        holder.date.setText(obj.get("date").toString());
+        List<String> list = obj.getList("passengers");
+        if (list != null) {
+            holder.pass.setText(list.size());
+        } else {
+            holder.pass.setText("0");
         }
+
+    }
+
+    @Override
+    public int getItemCount() {
         return list.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return list.get(i);
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView from;
+        private TextView dest;
+        private TextView date;
+        private TextView pass;
+        private CardView cardView;
+        private String objectId;
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        View v = view;
-        if (v == null) {
-            LayoutInflater inflater;
-            inflater = LayoutInflater.from(context);
-            v = inflater.inflate(R.layout.own_route_items, null);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            from = (TextView) itemView.findViewById(R.id.own_from);
+            dest = (TextView) itemView.findViewById(R.id.own_to);
+            date = (TextView) itemView.findViewById(R.id.own_date);
+            pass = (TextView) itemView.findViewById(R.id.own_passengers);
+            cardView = (CardView) itemView.findViewById(R.id.card_view_own_routes);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Object_ID", objectId);
+                    FragmentManager fragmentManager = parentFragment.getFragmentManager();
+                    EditRouteFragment fragment = new EditRouteFragment();
+                    fragment.setArguments(bundle);
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    ft.replace(R.id.content, fragment);
+                    ft.addToBackStack("EditRouteFragment");
+                    ft.commit();
+                }
+            });
         }
-        ParseObject object = (ParseObject) getItem(i);
-        TextView from = (TextView) v.findViewById(R.id.own_from);
-        TextView destination = (TextView) v.findViewById(R.id.own_to);
-        TextView date = (TextView) v.findViewById(R.id.own_date);
-        TextView passangers = (TextView) v.findViewById(R.id.own_passengers);
-        from.setText(object.getString("from"));
-        destination.setText(object.getString("destionation"));
-        date.setText(object.getString("date"));
-        passangers.setText(object.get("numberOfPassengers").toString());
-        return v;
     }
 }
 

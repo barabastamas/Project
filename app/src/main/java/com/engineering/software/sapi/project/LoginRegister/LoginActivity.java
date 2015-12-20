@@ -1,25 +1,17 @@
 package com.engineering.software.sapi.project.LoginRegister;
 
 import android.app.Activity;
-
-
 import android.app.Dialog;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,13 +21,9 @@ import android.widget.Toast;
 import com.engineering.software.sapi.project.MainActivity;
 import com.engineering.software.sapi.project.R;
 import com.facebook.login.widget.LoginButton;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
@@ -59,6 +47,17 @@ public class LoginActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
+            // Go to the user info activity
+            showMainActivity();
+        }
+
+        if (currentUser !=null) {
+            // Go to the user info activity
+            showMainActivity();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -132,7 +131,7 @@ public class LoginActivity extends Activity {
     }
 
     private void fbSignUp(){
-        List<String> permissions = Arrays.asList("public_profile");
+        List<String> permissions = Arrays.asList("public_profile","email");
         ParseFacebookUtils.logInWithReadPermissionsInBackground(this, permissions, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
@@ -179,14 +178,14 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onClick(View v) {
 
-                         EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
+                        EditText enterMail = (EditText) forgotPassDialog.findViewById(R.id.etEnterAddress);
                         final String to = enterMail.getText().toString();
                         ParseUser.requestPasswordResetInBackground(to,
                                 new RequestPasswordResetCallback() {
                                     @Override
                                     public void done(com.parse.ParseException e) {
                                         if (e == null) {
-                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions."+to, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(LoginActivity.this, "An email was successfully sent with reset instructions." + to, Toast.LENGTH_LONG).show();
                                             forgotPassDialog.dismiss();
                                         } else {
                                             Toast.makeText(LoginActivity.this, "Something went wrong." + to, Toast.LENGTH_LONG).show();
@@ -274,8 +273,7 @@ public class LoginActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        moveTaskToBack(true);
     }
 }
 

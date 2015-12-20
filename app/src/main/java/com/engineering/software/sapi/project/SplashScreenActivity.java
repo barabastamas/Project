@@ -51,6 +51,7 @@ public class SplashScreenActivity extends Activity {
         try {
             Parse.initialize(getApplication(), "NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg", "TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2");
             ParseInstallation.getCurrentInstallation().saveInBackground();
+            ParseFacebookUtils.initialize(this);
 
 
         } catch (Exception e) {
@@ -70,7 +71,7 @@ public class SplashScreenActivity extends Activity {
          */
         FacebookSdk.sdkInitialize(getApplicationContext());
         initParse();
-        ParseFacebookUtils.initialize(this);
+
 
 
 
@@ -109,5 +110,11 @@ public class SplashScreenActivity extends Activity {
                 SplashScreenActivity.this.finish();
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 }

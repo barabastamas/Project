@@ -31,8 +31,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="price">Price:</string>
-    <string name="date">Date:</string>
+    <string name="price">Price</string>
+    <string name="date">Date</string>
     <string name="ron">RON</string>
     <string name="from">From</string>
     <string name="to">To</string>

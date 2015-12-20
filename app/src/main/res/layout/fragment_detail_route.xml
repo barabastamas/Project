@@ -95,6 +95,7 @@
 
             <!-- Starting location & Destination -->
             <LinearLayout
+                android:id="@+id/route_locations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -231,8 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp" />
+                android:paddingTop="25dp" />
 
         </LinearLayout>
 
@@ -242,11 +242,12 @@
         android:id="@+id/fab_subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_subscribe"
         app:layout_anchor="@id/coordinatorLayout"
-        app:layout_anchorGravity="bottom|right"
+        app:layout_anchorGravity="bottom|right|end"
         app:layout_behavior="com.engineering.software.sapi.project.FloatingActionButtonBehavior" />
+
 
 </android.support.design.widget.CoordinatorLayout>

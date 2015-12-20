@@ -1,6 +1,7 @@
 package com.engineering.software.sapi.project;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -12,8 +13,8 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -159,32 +161,62 @@ public class DetailRouteFragment extends Fragment {
         setupMap();
 
         /*
-         * Verify route owner
-         */
-        mIsRouteOwner = isOwner(currentUser);
-        if (mIsRouteOwner) {
-            Log.d("SUBSCRIBE", "Can't subscribe to own route");
-            disableSubscription(fabSubscribe);
-        }
-
-        /*
-         * Verify if the user already subscribed
-         */
-        mSubscribed = verifySubscription(currentUser);
-        if (mSubscribed) {
-            Log.d("SUBSCRIBE", "Already subscribed");
-            disableSubscription(fabSubscribe);
-        }
-
-        /*
+         * Get route owner
+         * Verify if the user is already subscribed
          * Verify if there is room to subscribe
+         * Set up the subscribe button (FAB)
          */
-        mIsFreeSeat = isFreeSeat();
-        if (!mIsFreeSeat) {
-            Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
-            disableSubscription(fabSubscribe);
-        }
+        setupSubscription();
 
+        /*
+         * Set up call and send email buttons
+         */
+        setupButtons();
+
+        return view;
+    }
+
+    private void setupButtons() {
+        /*
+         * Set up call button
+         */
+        buttonCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                intentCall.setData(Uri.parse("tel:" + routeOwner.get("phoneNumber")));
+                startActivity(intentCall);
+            }
+        });
+
+        /*
+         * Set up send email button
+         */
+        buttonSendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+//                emailIntent.setType("message/rfc822");
+
+//                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"router@yahoo.com"});
+//                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Router. Subscription");
+
+                emailIntent.setData(
+                        Uri.parse("mailto:" + Uri.encode("router@yahoo.com") +
+                                "?subject=" + Uri.encode("Route Subscription"))
+                );
+
+                try {
+                    startActivity(Intent.createChooser(emailIntent, "Send mail with..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        /*
+         * Set up subscribe button
+         */
         fabSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +256,35 @@ public class DetailRouteFragment extends Fragment {
                 }
             }
         });
-        return view;
+    }
+
+    private void setupSubscription() {
+        /*
+         * Verify route owner
+         */
+        mIsRouteOwner = isOwner(currentUser);
+        if (mIsRouteOwner) {
+            Log.d("SUBSCRIBE", "Can't subscribe to own route");
+            disableSubscription(fabSubscribe);
+        }
+
+        /*
+         * Verify if the user is already subscribed
+         */
+        mSubscribed = verifySubscription(currentUser);
+        if (mSubscribed) {
+            Log.d("SUBSCRIBE", "Already subscribed");
+            disableSubscription(fabSubscribe);
+        }
+
+        /*
+         * Verify if there is room to subscribe
+         */
+        mIsFreeSeat = isFreeSeat();
+        if (!mIsFreeSeat) {
+            Log.d("SUBSCRIBE", "Maximum numbers of passengers reached");
+            disableSubscription(fabSubscribe);
+        }
     }
 
     /*
@@ -476,26 +536,6 @@ public class DetailRouteFragment extends Fragment {
             img = getProfileImage(routeOwner);
             imageViewProfileImage.setImageBitmap(img);
 
-            buttonCall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intentCall = new Intent(Intent.ACTION_CALL);
-                    intentCall.setData(Uri.parse("tel:" + routeOwner.get("phoneNumber")));
-                    startActivity(intentCall);
-                }
-            });
-
-
-            buttonSendEmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    fragmentTransaction.hide(DetailRouteFragment.this);
-                    fragmentTransaction.add(R.id.content, new SendEmailFragment());
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
-            });
         } catch (ParseException e) {
             e.printStackTrace();
         }

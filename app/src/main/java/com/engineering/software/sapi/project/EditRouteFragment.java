@@ -65,6 +65,7 @@ public class EditRouteFragment extends Fragment {
     private EditText editTextPrice;
     private TextView textViewDate;
 
+    private String routeObjectId;
     private String starting;
     private String destination;
     private Bitmap img;
@@ -110,7 +111,7 @@ public class EditRouteFragment extends Fragment {
         /*
          * Get data from caller fragment ( OwnRoutes )
          */
-        /*arg = getArguments();
+        arg = getArguments();
 
         if (arg != null) {
             routeObjectId = getArguments().getString("Object_ID");
@@ -118,7 +119,6 @@ public class EditRouteFragment extends Fragment {
         } else {
             Log.d("ARGUMENTS", "Arguments null");
         }
-*/
 
         /*
          * Initialization
@@ -134,7 +134,11 @@ public class EditRouteFragment extends Fragment {
             e.printStackTrace();
         }
 
-        getData();
+        try {
+            getRoute();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         /*
          * Initialize Map.
@@ -220,6 +224,23 @@ public class EditRouteFragment extends Fragment {
 
         return view;
     }
+
+    private void getRoute() throws ParseException {
+        ParseQuery<ParseObject> routes = ParseQuery.getQuery("Routes");
+        try {
+            route = routes.get(routeObjectId);
+            editTextFrom.setText(route.get("from").toString());
+            editTextDestination.setText(route.get("destination").toString());
+            textViewDate.setText(route.get("date").toString());
+            editTextPrice.setText(route.get("price").toString());
+
+            getData();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void makeTextViewNotFocusable(TextView textView) {
         textView.setFocusable(false);
@@ -340,7 +361,7 @@ public class EditRouteFragment extends Fragment {
                 addMarkersToStart(latLngStarting);
                 addMarkersToDestination(latLngDestination);
 
-                // Move camera to startin location
+                // Move camera to starting location
                 moveToCoordinates(latLngStarting, latLngDestination);
 
                 /*PolylineOptions polylineOptions = new PolylineOptions();
@@ -466,7 +487,7 @@ public class EditRouteFragment extends Fragment {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Routes");
 
         try {
-            route = query.get("Yht8tYYaHl");
+            route = query.get(routeObjectId);
         } catch (ParseException e) {
             e.printStackTrace();
         }

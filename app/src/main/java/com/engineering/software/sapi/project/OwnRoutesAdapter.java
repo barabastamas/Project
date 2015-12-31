@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class OwnRoutesAdapter extends RecyclerView.Adapter<OwnRoutesAdapter.View
     private List<ParseObject> list = null;
     private Fragment parentFragment = null;
     private LayoutInflater layoutInflater;
+    private String routeObjectId;
 
     public OwnRoutesAdapter(List<ParseObject> list, Fragment fragment, Context context) {
         this.list = list;
@@ -40,13 +42,16 @@ public class OwnRoutesAdapter extends RecyclerView.Adapter<OwnRoutesAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ParseObject obj = list.get(position);
+
+        routeObjectId = obj.getObjectId();
+
         holder.objectId = obj.get("routeOwner").toString();
         holder.from.setText(obj.get("from").toString());
         holder.dest.setText(obj.get("destination").toString());
         holder.date.setText(obj.get("date").toString());
         List<String> list = obj.getList("passengers");
         if (list != null) {
-            holder.pass.setText(list.size());
+            holder.pass.setText("" + list.size());
         } else {
             holder.pass.setText("0");
         }
@@ -83,7 +88,7 @@ public class OwnRoutesAdapter extends RecyclerView.Adapter<OwnRoutesAdapter.View
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("Object_ID", objectId);
+                    bundle.putString("Object_ID", routeObjectId);
                     FragmentManager fragmentManager = parentFragment.getFragmentManager();
                     EditRouteFragment fragment = new EditRouteFragment();
                     fragment.setArguments(bundle);

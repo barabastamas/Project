@@ -52,8 +52,6 @@ public class SplashScreenActivity extends Activity {
             Parse.initialize(getApplication(), "NiPzJoksbo1Hjp8VO5qiTJf0heB2ZHTvsbfgF2Gg", "TaHxiUvGn5dICdDllvDlMJLD56NEO3chJPkFI5b2");
             ParseInstallation.getCurrentInstallation().saveInBackground();
             ParseFacebookUtils.initialize(this);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,20 +65,10 @@ public class SplashScreenActivity extends Activity {
         hideStatusBar();
 
         /*
-         *  Initialize Parse
+         *  Initialize Parse and Facebook
          */
         FacebookSdk.sdkInitialize(getApplicationContext());
         initParse();
-
-
-
-
-        /*
-         *  Create TestObject
-         */
-        /*ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();*/
 
         ImageView loading = (ImageView) findViewById(R.id.loading_animation);
         loading.setBackgroundResource(R.drawable.loading_animation);

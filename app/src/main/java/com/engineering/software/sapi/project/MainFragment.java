@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class MainFragment extends Fragment {
     FragmentManager fragmentManager,fragmentManager1;
     Fragment fragment,fragment1;
     FragmentTransaction ft,ft1;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -28,12 +30,12 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        Button button = (Button) v.findViewById(R.id.addNewButton);
+        final Button button = (Button) v.findViewById(R.id.addNewButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Message", Toast.LENGTH_SHORT).show();
-                Log.d("Log", "Button was pressed");
+//                Toast.makeText(v.getContext(), "Message", Toast.LENGTH_SHORT).show();
                 fragmentManager = getFragmentManager();
                 fragment = new AddRouteFragment();
                 ft = fragmentManager.beginTransaction();
@@ -47,8 +49,7 @@ public class MainFragment extends Fragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Search", Toast.LENGTH_SHORT).show();
-                Log.d("Log1", "Button was pressed");
+//                Toast.makeText(v.getContext(), "Search", Toast.LENGTH_SHORT).show();
                 fragmentManager1 = getFragmentManager();
                 fragment1 = new SearchRouteFragment();
                 ft1 = fragmentManager1.beginTransaction();

@@ -103,6 +103,7 @@ public class EditRouteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle("Edit route");
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_route, container, false);

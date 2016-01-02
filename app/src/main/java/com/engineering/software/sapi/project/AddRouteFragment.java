@@ -88,6 +88,7 @@ public class AddRouteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle("Add route");
 
         // Inflate the layout for this fragment
 

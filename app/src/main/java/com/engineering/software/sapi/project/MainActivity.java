@@ -34,15 +34,6 @@ import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
-    /*
-     * Navigation drawer menu item positions
-     */
-    private static final int PROFILE = 0;
-    private static final int OWN_ROUTES = 1;
-    private static final int ADD_ROUTE = 2;
-    private static final int SEARCH_ROUTE = 3;
-    private static final int LOG_OUT = 4;
-
     private CoordinatorLayout coordinatorLayout;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -228,6 +219,6 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Sets the action bar title
          */
-        setActionBarTitle("Main");
+        setActionBarTitle("Router");
     }
 }

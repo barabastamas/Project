@@ -93,11 +93,11 @@ public class AddRouteFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_add_route, container, false);
-        inputLayoutTo = (TextInputLayout) container.findViewById(R.id.input_layout_to);
-        inputLayoutFrom = (TextInputLayout) container.findViewById(R.id.input_layout_from);
-        inputLayoutDate = (TextInputLayout) container.findViewById(R.id.input_layout_date);
-        inputLayoutMax = (TextInputLayout) container.findViewById(R.id.input_layout_max);
-        inputLayoutPrice = (TextInputLayout) container.findViewById(R.id.input_layout_price);
+        inputLayoutTo = (TextInputLayout) v.findViewById(R.id.input_layout_to);
+        inputLayoutFrom = (TextInputLayout) v.findViewById(R.id.input_layout_from);
+        inputLayoutDate = (TextInputLayout) v.findViewById(R.id.input_layout_date);
+        inputLayoutMax = (TextInputLayout) v.findViewById(R.id.input_layout_max);
+        inputLayoutPrice = (TextInputLayout) v.findViewById(R.id.input_layout_price);
         tvfrom = (AutoCompleteTextView) v.findViewById(R.id.from);
         countries = getResources().getStringArray(R.array.city_array);
         adapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, countries);
@@ -136,7 +136,7 @@ public class AddRouteFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addValidate();
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                /*InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(button.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
                 //Toast.makeText(v.getContext(), "Message", Toast.LENGTH_SHORT).show();
                 Date datevegso = null;
@@ -152,7 +152,7 @@ public class AddRouteFragment extends Fragment {
                     e.printStackTrace();
                 }*/
 
-                if (tvfrom.getText().toString().equals("") || tvto.getText().toString().equals("") || date.getText().toString().equals("") || price.getText().toString().equals("") || maxp.getText().toString().equals("") || date.getText().toString().equals("Error Date")) {
+                /*if (tvfrom.getText().toString().equals("") || tvto.getText().toString().equals("") || date.getText().toString().equals("") || price.getText().toString().equals("") || maxp.getText().toString().equals("") || date.getText().toString().equals("Error Date")) {
                     //Toast.makeText(v.getContext(), "Please complete the form (correctly)", Toast.LENGTH_LONG).show();
                     Snackbar.make(getView(), "Please complete the form (correctly)", Snackbar.LENGTH_LONG).show();
                 } else {
@@ -206,7 +206,7 @@ public class AddRouteFragment extends Fragment {
                             Toast.makeText(getView().getContext(), "No user", Toast.LENGTH_LONG).show();
                         }
                     }
-                }
+                }*/
             }
         });
         return v;
@@ -253,29 +253,86 @@ public class AddRouteFragment extends Fragment {
             return;
         }
 
+        if (!validateFromTo()) {
+            return;
+        }
+
         Toast.makeText(getContext(), "Saved!", Toast.LENGTH_SHORT).show();
+
+        fromtxt = tvfrom.getText().toString();
+        totxt = tvto.getText().toString();
+        datetxt = date.getText().toString();
+        pricetxt = Integer.parseInt(price.getText().toString());
+        maxptxt = Integer.parseInt(maxp.getText().toString());
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            ParseObject object = ParseObject.create("Routes");
+            object.put("from", fromtxt);
+            object.put("destination", totxt);
+            object.put("date", datetxt);
+            object.put("price", pricetxt);
+            object.put("numberOfPassanger", maxptxt);
+            String owner = ParseUser.getCurrentUser().getObjectId();
+
+            object.put("routeOwner", owner);
+            object.put("isValid", true);
+            object.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        //getActivity().finish();
+                        //Toast.makeText(getView().getContext(), "Sie sind schon daaaaa...", Toast.LENGTH_LONG).show();
+                        FragmentManager fragmentManager;
+                        Fragment fragment;
+                        FragmentTransaction ft;
+                        fragmentManager = getFragmentManager();
+                        fragment = new MainFragment();
+                        ft = fragmentManager.beginTransaction();
+                        ft.replace(R.id.content, fragment);
+                        ft.addToBackStack("MainFragment");
+                        ft.commit();
+                    } else {
+                        Toast.makeText(getView().getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(getView().getContext(), "No user", Toast.LENGTH_LONG).show();
+        }
     }
 
 
+
     private boolean validateTo() {
-        if (tvto.getText().toString().trim().isEmpty()) {
+        if (tvto.getText().toString().trim().isEmpty() || !isCorrect(tvto.getText().toString())) {
             inputLayoutTo.setError(getString(R.string.err_msg_to));
             requestFocus(tvto);
             return false;
         } else {
-            //inputLayoutTo.setErrorEnabled(false);
+            inputLayoutTo.setErrorEnabled(false);
         }
 
         return true;
     }
 
+    private boolean validateFromTo(){
+        if (tvto.getText().toString().trim().equals(tvfrom.getText().toString().trim())){
+            inputLayoutTo.setError(getString(R.string.err_msg_to));
+            requestFocus(tvto);
+            return false;
+        }else {
+            inputLayoutTo.setErrorEnabled(false);
+        }
+        return true;
+    }
+
     private boolean validateFrom() {
-        if (tvfrom.getText().toString().trim().isEmpty()) {
+        if (tvfrom.getText().toString().trim().isEmpty() || !isCorrect(tvfrom.getText().toString())) {
             inputLayoutFrom.setError(getString(R.string.err_msg_from));
             requestFocus(tvfrom);
             return false;
         } else {
-            //inputLayoutFrom.setErrorEnabled(false);
+            inputLayoutFrom.setErrorEnabled(false);
         }
 
         return true;
@@ -287,7 +344,7 @@ public class AddRouteFragment extends Fragment {
             requestFocus(date);
             return false;
         } else {
-            //inputLayoutDate.setErrorEnabled(false);
+            inputLayoutDate.setErrorEnabled(false);
         }
 
         return true;
@@ -299,10 +356,14 @@ public class AddRouteFragment extends Fragment {
             requestFocus(price);
             return false;
         } else {
-            //inputLayoutPrice.setErrorEnabled(false);
+            inputLayoutPrice.setErrorEnabled(false);
         }
 
         return true;
+    }
+
+    public boolean isCorrect(String name) {
+        return name.matches("[a-zA-Z ]+");
     }
 
     private boolean validateMax() {
@@ -311,7 +372,7 @@ public class AddRouteFragment extends Fragment {
             requestFocus(maxp);
             return false;
         } else {
-            //inputLayoutMax.setErrorEnabled(false);
+            inputLayoutMax.setErrorEnabled(false);
         }
 
         return true;
@@ -324,6 +385,7 @@ public class AddRouteFragment extends Fragment {
     }
 
     private class MyTextWatcher implements TextWatcher {
+
 
         private View view;
 
@@ -341,6 +403,7 @@ public class AddRouteFragment extends Fragment {
             switch (view.getId()) {
                 case R.id.to:
                     validateTo();
+                    validateFromTo();
                     break;
                 case R.id.from:
                     validateFrom();

@@ -53,8 +53,8 @@
     <string name="maxp">Max person</string>
     <string name="addr">add</string>
     <string name="from_date">From date</string>
-    <string name="err_msg_to">Enter a full destination</string>
-    <string name="err_msg_from">Enter a full take-off point</string>
+    <string name="err_msg_to">Enter a full destination (That not matches with the take-off point)</string>
+    <string name="err_msg_from">Enter a full take-off point (correctly)</string>
     <string name="err_msg_date">Enter a valid date</string>
     <string name="err_msg_price">Enter a price</string>
     <string name="err_msg_maxperson">Enter a person limit</string>

@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,9 +28,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.engineering.software.sapi.project.Profile.ProfileFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -77,6 +80,7 @@ public class DetailRouteFragment extends Fragment {
     private TextView textViewDate;
     private TextView textViewPrice;
     private ImageView imageViewProfileImage;
+    private LinearLayout linearLayoutOwner;
 
     private ImageButton buttonCall;
     private ImageButton buttonSendEmail;
@@ -163,14 +167,6 @@ public class DetailRouteFragment extends Fragment {
         setupMap();
 
         /*
-         * Get route owner
-         * Verify if the user is already subscribed
-         * Verify if there is room to subscribe
-         * Set up the subscribe button (FAB)
-         */
-        setupSubscription();
-
-        /*
          * Set up call and send email buttons
          */
         setupButtons();
@@ -223,6 +219,13 @@ public class DetailRouteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("SUBSCRIBE", "fab clicked");
+                /*
+                 * Get route owner
+                 * Verify if the user is already subscribed
+                 * Verify if there is room to subscribe
+                 * Set up the subscribe button (FAB)
+                 */
+                setupSubscription();
 
                 if (mIsRouteOwner) {
                     Snackbar.make(
@@ -256,6 +259,27 @@ public class DetailRouteFragment extends Fragment {
                     }
 
                 }
+            }
+        });
+
+        /*
+         * On click on the owner
+         */
+        linearLayoutOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle arg = new Bundle();
+                arg.putString("userObjectID", routeOwner.getObjectId());
+
+                Fragment fragment = new ProfileFragment();
+                fragment.setArguments(arg);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+                fragmentTransaction.hide(DetailRouteFragment.this);
+                fragmentTransaction.add(R.id.content, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
     }
@@ -561,6 +585,7 @@ public class DetailRouteFragment extends Fragment {
         textViewDate = (TextView) view.findViewById(R.id.text_view_date);
         textViewPrice = (TextView) view.findViewById(R.id.text_view_price);
         imageViewProfileImage = (ImageView) view.findViewById(R.id.detail_route_profile_image);
+        linearLayoutOwner = (LinearLayout) view.findViewById(R.id.owner_layout);
 
         buttonCall = (ImageButton) view.findViewById(R.id.button_call);
         buttonSendEmail = (ImageButton) view.findViewById(R.id.button_send_email);

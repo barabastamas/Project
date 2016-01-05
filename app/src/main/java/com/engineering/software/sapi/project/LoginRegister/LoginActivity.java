@@ -256,9 +256,6 @@ public class LoginActivity extends Activity {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("username", username);
                     finish();
                 }
             }
